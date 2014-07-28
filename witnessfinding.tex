@@ -1,0 +1,215 @@
+%% witnessfinding.tex - Lower bounds for witness-finding algorithms
+%%
+%% Copyright 2014 Jeffrey Finkelstein.
+%%
+%% This LaTeX markup document is made available under the terms of the Creative
+%% Commons Attribution-ShareAlike 4.0 International License,
+%% https://creativecommons.org/licenses/by-sa/4.0/.
+\documentclass{article}
+
+%% This must come before hyperref.
+\usepackage{amsthm}
+%% This must come before hyperref.
+\usepackage{thmtools}
+%% This must come before complexity.
+\usepackage{hyperref}
+%% This is strongly recommended by biblatex.
+\usepackage[english]{babel}
+%% This is strongly recommended by biblatex.
+\usepackage{csquotes}
+\usepackage[backend=biber]{biblatex}
+\usepackage{amsmath}
+%\usepackage{amssymb}
+\usepackage{complexity}
+
+\hypersetup{pdftitle={Lower bounds for witness-finding algorithms}, pdfauthor={Jeffrey Finkelstein}}
+
+\addbibresource{witnessfinding.bib}
+
+\declaretheorem[numberwithin=section]{theorem}
+\declaretheorem[numberlike=theorem]{lemma}
+\declaretheorem[numberlike=theorem]{corollary}
+\declaretheorem[numberlike=theorem, style=definition]{definition}
+
+\newcommand{\pow}{\mathcal{P}}
+\newcommand{\todo}[1]{\textbf{TODO #1}}
+
+\title{Lower bounds for witness-finding algorithms}
+\author{Jeffrey Finkelstein}
+
+\begin{document}
+
+\maketitle
+
+%%\section{Introduction}
+%%
+%% context
+%% need
+%% task
+%% object
+%%
+%% findings
+%% conclusion
+%% perspectives
+
+\section{Definitions}
+
+Let $\Sigma = \{0, 1\}$.
+Let $[n] = \{1, \dotsc, n\}$.
+
+A language $L \subseteq \Sigma^*$ is a \emph{witnessed language} if there exists a language $L' \subseteq \Sigma^* \times \Sigma^*$, called the \emph{witness relation}, such that $x \in L$ if and only if there is a $w \in \Sigma^*$ such that $(x, w) \in L'$.
+
+\begin{definition}[{\autocite[Definition~1]{krw12}}]
+  Suppose $n$ is a positive integer and $k \in [2^n]$.
+  A \emph{witness set} is a nonempty subset of $\Sigma^n$ denoted by $W$, and each element of $W$ is a \emph{witness}.
+  An \emph{intersection query} (contrast with intersection queries defined in \autocite{krw14}) is a set $Q \subseteq \Sigma^n$ interpreted as the question ``does $Q \cap W = k$?''.
+
+  An \emph{intersection oracle} is a function $A^k_W \colon \Sigma^n \to \{0, 1\}$ such that $A^k_W(Q) = 1$ if and only if $Q \cap W = k$.
+  %% Let $A_W(Q) \in \{0, 1\}$ denote the answer to the query $Q$, formally $A_W(Q) = 1$ if and only if $Q \cap W \noteq \emptyset$.
+\end{definition}
+
+If $k = 0$, the intersection query is called an \emph{emptiness query} and the intersection oracle $A^0_W$ is called the \emph{emptiness oracle}.
+If $k = 1$, the intersection query is called an \emph{isolation query} and the intersection oracle $A^0_W$ is called the \emph{isolation oracle}.
+
+Suppose a language $L$ is a witnessed language with witness relation $L'$.
+If $L'$ is in $\P$, then the emptiness oracle can be interpreted as a $\coNP$ oracle (which is equivalent to an $\NP$ oracle by complementation) and the isolation oracle can be interpreted as a $\US$ oracle ($\US$ was defined in \autocite{bg82}).
+In other words, $A^0_W$ acts as an oracle for \textsc{Satisfiability} and $A^1_W$ for \textsc{Unique Satisfiability}.
+(For context, $\coNP \subseteq \US \subseteq \BH_2 \subseteq \P^\NP$.)
+
+\begin{definition}
+  Suppose $A$ is an intersection query oracle.
+  A \emph{randomized witness-finding query algorithm} (or more briefly, a witness-finding algorithm) is a pair $(Q, F)$ of randomized Turing machines where, for every witness length $n$ and random seed $s \in \Sigma^r$, $Q(s)$ outputs a sequence of queries $Q_1, \dotsc, Q_m$, each a subset of $\Sigma^n$, and $F(s, A_W(Q_1), \dotsc, A_W(Q_m))$ outputs an element of $\Sigma^n$.
+  For a witness set $W$, the algorithm \emph{succeeds with respect to $W$} if $F$ outputs an element of $W$.
+  The \emph{success probability} of the algorithm is
+  \begin{equation*}
+    \min_{W \subseteq \Sigma^n} \Pr_{s \in \Sigma^r} [(Q, F) \text{ succeeds with respect to } W].
+  \end{equation*}
+  Parameters $r$ and $m$ are called the \emph{seed length} and \emph{query complexity}.
+
+  If $Q$ has access to the intersection query oracle, then the algorithm is called \emph{adaptive}, otherwise it is called \emph{nonadaptive}.
+  An adaptive algorithm can only make queries on $Q_1, \dotsc, Q_{i - 1}$ to generate $Q_{i + 1}$.
+\end{definition}
+
+\begin{definition}
+  If the oracle $A$ in the above definition is the emptiness oracle, the witness-finding algorithm is called an \emph{emptiness query algorithm}.
+  If it is the isolation oracle, the algorithm is called an \emph{isolation query algorithm}.
+\end{definition}
+
+The emptiness query algorithm is the same as \autocite[Definition~2]{krw12}.
+I don't believe the isolation query algorithm has been defined before.
+
+\begin{definition}
+  A \emph{randomized hitting algorithm} (or more briefly, a hitting algorithm) is a randomized Turing machine $P$ with access to the isolation oracle $A^1_W$ where, for every witness length $n$ and random seed $s \in \Sigma^r$, $P(s)$ outputs a sequence of queries $Q_1, \dotsc, Q_m$, each a subset of $\Sigma^n$.
+  Each $Q_i$ may depend on the oracle answers to $Q_1, \dotsc, Q_{i - 1}$.
+  For a witness set $W$, the algorithm \emph{succeeds with respect to $W$} if $A^1_W(Q_m) = 1$.
+  The \emph{success probability} of the algorithm is
+  \begin{equation*}
+    \min_{W \subseteq \Sigma^n} \Pr_{s \in \Sigma^r} [P \text{ succeeds with respect to } W].
+  \end{equation*}
+  The seed length and query complexity are as in the previous definition.
+\end{definition}
+
+This definition is a complexity theoretic restatement of the combinatorial ``hitting game'', as described in \autocite[Section~3]{newport14} (the original definition seems to be from \autocite[Definition~5]{bgi92}).
+
+A hitting algorithm is always an adaptive algorithm; a nonadaptive hitting algorithm makes little sense here because it would be essentially the same as simply guessing the witness set at random.
+
+A witness-finding algorithm must output an element of $W$, whereas a hitting algorithm need not.
+
+\todo{define polynomial-time algorithms (provide polysize circuits that encode the query sets)}
+
+\section{Relationship among algorithms}
+
+The problem of finding a hitting algorithm reduces to the problem of finding an isolation query algorithm.
+
+\begin{lemma}\label{lem:reduction}
+  Suppose there is a (nonadaptive or adaptive) isolation query algorithm with success probability $p$ and query complexity $m$.
+  Then there is a hitting algorithm with success probability $p$ and query complexity $m + 1$.
+\end{lemma}
+\begin{proof}
+  Suppose $(Q, F)$ is the isolation query algorithm.
+  Construct hitting algorithm $P$ with access to isolation oracle $A^1_W$ as follows.
+  \begin{itemize}
+  \item simulate $Q(s)$ to generate queries $Q_1, \dotsc, Q_m$ (simulating access to the isolation oracle if adaptivity is required)
+  \item send those queries to the oracle $A^1_W$ to get answers $A_1, \dotsc, A_m$
+  \item simulate $F(s, A_1, \dotsc, A_m)$ to output a string $w$.
+  \item let $Q_{m + 1} = \{ w \}$ and output $Q_1, \dotsc, Q_{m + 1}$
+  \end{itemize}
+
+  Let $W$ be an arbitrary witness set and suppose the success probability of the isolation query algorithm $(Q, F)$ is $p$.
+  This is the probability that $w \in W$, or in other words, the probability that $|Q_{m + 1} \cap W| = 1$.
+  Since $Q_{m + 1}$ is the last query set output by $P$, the probability that $P$ succeeds with respect to $W$ equals the probability that $(Q, F)$ succeeds with respect to $W$.
+  Thus $P$ has success probability $p$ and query complexity $m + 1$.
+\end{proof}
+
+On the other hand, there does not seem to be a general reduction from an isolation query algorithm to a hitting algorithm.
+In order to output a single witness knowing only that a witness is contained in a particular query set doesn't help, unless the query set is small; there is no such guarantee on the size of that set.
+
+\section{Upper bounds}
+
+\begin{theorem}
+  There is a polynomial time adaptive emptiness query algorithm with success probability $1$ and query complexity $O(n)$.
+\end{theorem}
+\begin{proof}[Proof idea]
+  This is the well-known bit-by-bit $\P^\NP$ computable function for computing a witness for a given string.
+
+  For each $i \in [n]$ and each $b \in \{0, 1\}$, define the query $Q_{i, b}$ inductively (or in other words, adaptively) as follows.
+  If $i = 1$, then $Q_{i, b} = \{ b v | v \in \{0, 1\}^{n - 1}\}$.
+  For each subsequent pair of queries, let $u = b_1 \dotsb b_{i - 1}$, where $b_j$ is a bit that caused the oracle to answer ``yes'' on query $Q_{j, b_j}$ for each $j \in [i - 1]$, and let $Q_{i, b} = \{ u b v | v \in \{0, 1\}^{n - i}\}$.
+  Finally, given the responses to $Q_{n, 0}$ and $Q_{n, 1}$, which are singleton sets, the algorithm simply outputs the sole element of the query set that caused the oracle to answer ``yes''.
+
+  The total number of queries is $2n$, which is in $O(n)$.
+\end{proof}
+
+\begin{theorem}[{\autocite[Proposition~1]{krw12} (citing \autocite{bcgl92})}]
+  There is a polynomial time nonadaptive emptiness query algorithm with success probability $\Omega(1)$ and query complexity $O(n^2)$.
+\end{theorem}
+\begin{proof}[Proof idea]
+  Use the Valiant--Vazirani Isolation Lemma in each query to guess each bit of a possible witness (in parallel).
+
+  First, consider a simpler set of queries.
+  Let $s$ be a string in $\Sigma^r$.
+  For each $i \in [n]$ and each $b \in \Sigma$, let $Q_{i, b} = \{ w | w \in C_s \land w_i = b\}$, where $C$ is the isolating set from the Valiant--Vazirani Isolation Lemma (for example, the set of all strings whose image is zero under a pairwise independent hash function).
+  The Valiant--Vazirani Isolation Lemma proves that this algorithm has success probability $\Omega(\frac{1}{n})$ and query complexity $O(n)$.
+  In order to get success probability $\Omega(1)$, we create $O(n)$ collections of $O(n)$ queries, with an independent set $C_{s_k}$ for each collection.
+  Now our queries are $Q_{k, i, b} = \{ w | w \in C_{s_k} \land w_i = b\}$, for each $s_k \in \left[O(n)\right]$, each $i$, and each $b$.
+\end{proof}
+
+\section{Lower bounds}
+
+\begin{theorem}[{\autocite[Theorem~2]{krw12}}]\label{thm:nonadaptiveemptiness}
+  There is no nonadaptive emptiness query algorithm with success probability $\Omega(1)$ and query complexity $o(n^2)$.
+\end{theorem}
+
+The proof of this theorem relies on the existence of a distribution on witness sets that places all witnesses far apart, so it is hard to guess both the number and location of the witnesses.
+This distribution comes from \autocite[Theorem~4.2]{dkvmw13}.
+
+\begin{theorem}[{\autocite[Theorems~3.3 and 3.4]{newport14}}]
+  There is no hitting algorithm with success probability $\Omega(1 - 2^{-n})$ and query complexity $o(n^2)$.
+  Furthermore, these bounds hold even when restricted to witness sets of cardinality two.
+\end{theorem}
+
+The proof of this theorem relies on the probabilistic method to show the existence of a witness set that is hard to ``hit'', found in \autocite{ablp91}.
+
+\begin{corollary}
+  There is no (nonadaptive or adaptive) isolation query algorithm with success probability $\Omega(1 - 2^{-n})$ and query complexity $o(n^2)$.
+  Furthermore, these bounds hold even when restricted to witness sets of cardinality two.
+\end{corollary}
+\begin{proof}
+  This is a proof by contradiction.
+  If there were such an algorithm, then \autoref{lem:reduction} would imply a hitting algorithm with the same success probability.
+  This would contradict the previous theorem, hence no such algorithm exists.
+\end{proof}
+
+This corollary is similar to \autoref{thm:nonadaptiveemptiness}, but provides an even stronger lower bound.
+Not only does it exclude the possibility of both adaptive and nonadaptive algorithms, it also allows them to have even better success probabilities.
+Furthermore, the isolation query oracle (which is like a $\US$ oracle) is a more powerful than the emptiness query oracle (which is like an $\NP$ oracle).
+
+\begin{theorem}[{\autocite[Theorem~3.2]{newport14}}]
+  There is no hitting algorithm with (expected success probability ??? and) expected query complexity $o(n)$.
+\end{theorem}
+
+I can't understand what the random variable is for which there is an expectation here.
+
+\printbibliography
+
+\end{document}
