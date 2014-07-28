@@ -146,7 +146,7 @@ In order to output a single witness knowing only that a witness is contained in 
 
 \section{Upper bounds}
 
-\begin{theorem}
+\begin{theorem}\label{thm:naive}
   There is a polynomial time adaptive emptiness query algorithm with success probability $1$ and query complexity $O(n)$.
 \end{theorem}
 \begin{proof}[Proof idea]
@@ -190,7 +190,7 @@ This distribution comes from \autocite[Theorem~4.2]{dkvmw13}.
 
 The proof of this theorem relies on the probabilistic method to show the existence of a witness set that is hard to ``hit'', found in \autocite{ablp91}.
 
-\begin{corollary}
+\begin{corollary}\label{cor:isolationalg}
   There is no (nonadaptive or adaptive) isolation query algorithm with success probability $\Omega(1 - 2^{-n})$ and query complexity $o(n^2)$.
   Furthermore, these bounds hold even when restricted to witness sets of cardinality two.
 \end{corollary}
@@ -209,6 +209,12 @@ Furthermore, the isolation query oracle (which is like a $\US$ oracle) is a more
 \end{theorem}
 
 I can't understand what the random variable is for which there is an expectation here.
+
+\section{Todo}
+
+Does the lower bound of \autoref{cor:isolationalg} hold for any algorithm asking queries to an oracle that answers questions of the form ``does $|Q \cap W| = k$?'' for any fixed positive integer $k$?
+(It certainly doesn't hold when $k = 0$, because of \autoref{thm:naive}.)
+This question may be answered by adapting the proof by probabilistic method given in \autocite{ablp91}.
 
 \printbibliography
 
