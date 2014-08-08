@@ -62,9 +62,9 @@ A language $L \subseteq \Sigma^*$ is a \emph{witnessed language} if there exists
 \begin{definition}[{\autocite[Definition~1]{krw12}}]
   Suppose $n$ is a positive integer and $k \in [2^n]$.
   A \emph{witness set} is a nonempty subset of $\Sigma^n$ denoted by $W$, and each element of $W$ is a \emph{witness}.
-  An \emph{intersection query} (contrast with intersection queries defined in \autocite{krw14}) is a set $Q \subseteq \Sigma^n$ interpreted as the question ``does $Q \cap W = k$?''.
+  An \emph{intersection query} (contrast with intersection queries defined in \autocite{krw14}) is a set $Q \subseteq \Sigma^n$ interpreted as the question ``does $|Q \cap W| = k$?''.
 
-  An \emph{intersection oracle} is a function $A^k_W \colon \Sigma^n \to \{0, 1\}$ such that $A^k_W(Q) = 1$ if and only if $Q \cap W = k$.
+  An \emph{intersection oracle} is a function $A^k_W \colon \Sigma^n \to \{0, 1\}$ such that $A^k_W(Q) = 1$ if and only if $|Q \cap W| = k$.
   %% Let $A_W(Q) \in \{0, 1\}$ denote the answer to the query $Q$, formally $A_W(Q) = 1$ if and only if $Q \cap W \noteq \emptyset$.
 \end{definition}
 
@@ -77,8 +77,9 @@ In other words, $A^0_W$ acts as an oracle for \textsc{Satisfiability} and $A^1_W
 (For context, $\coNP \subseteq \US \subseteq \BH_2 \subseteq \P^\NP$.)
 
 \begin{definition}
-  Suppose $A$ is an intersection query oracle.
-  A \emph{randomized witness-finding query algorithm} (or more briefly, a witness-finding algorithm) is a pair $(Q, F)$ of randomized Turing machines where, for every witness length $n$ and random seed $s \in \Sigma^r$, $Q(s)$ outputs a sequence of queries $Q_1, \dotsc, Q_m$, each a subset of $\Sigma^n$, and $F(s, A_W(Q_1), \dotsc, A_W(Q_m))$ outputs an element of $\Sigma^n$.
+  Let $k$ be an integer.
+  Suppose, for any fixed witness set $W$, $A^k_W$ is an intersection query oracle.
+  A \emph{randomized witness-finding query algorithm} (or more briefly, a witness-finding algorithm) is a pair $(Q, F)$ of randomized Turing machines where, for every witness length $n$ and random seed $s \in \Sigma^r$, $Q(s)$ outputs a sequence of queries $Q_1, \dotsc, Q_m$, each a subset of $\Sigma^n$, and $F(s, A^k_W(Q_1), \dotsc, A^k_W(Q_m))$ outputs an element of $\Sigma^n$.
   For a witness set $W$, the algorithm \emph{succeeds with respect to $W$} if $F$ outputs an element of $W$.
   The \emph{success probability} of the algorithm is
   \begin{equation*}
@@ -216,11 +217,15 @@ This corollary is similar to \autoref{thm:nonadaptiveemptiness}, but provides an
 Not only does it exclude the possibility of both adaptive and nonadaptive algorithms, it also allows them to have even better success probabilities.
 Furthermore, the isolation query oracle (which is like a $\US$ oracle) is a more powerful than the emptiness query oracle (which is like an $\NP$ oracle).
 
+Other types of queries produce the same lower bounds.
+Queries of the form ``does $|Q \cap W| = |Q|$?'', or equivalently, ``is $Q \subseteq W$?'', yield the same lower bounds as in \autoref{thm:nonadaptiveemptiness}.
+Such queries are \emph{monotone queries} (that is, if $W \subseteq W'$, then $Q \subseteq W$ implies $Q \subseteq W'$), and monotone queries with constant success probability have $o(n^2)$ query complexity \autocite[Theorem~1.3]{krw14}.
+
 \begin{theorem}[{\autocite[Theorem~3.2]{newport14}}]
   There is no hitting algorithm with (expected success probability ??? and) expected query complexity $o(n)$.
 \end{theorem}
 
-I can't understand what the random variable is for which there is an expectation here.
+\todo{I can't understand what the random variable is for which there is an expectation here.}
 
 \section{Todo}
 
