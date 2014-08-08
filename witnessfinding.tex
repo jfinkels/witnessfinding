@@ -81,15 +81,17 @@ In other words, $A^0_W$ acts as an oracle for \textsc{Satisfiability} and $A^1_W
   Suppose, for any fixed witness set $W$, $A^k_W$ is an intersection query oracle.
   A \emph{randomized witness-finding query algorithm} (or more briefly, a witness-finding algorithm) is a pair $(Q, F)$ of randomized Turing machines where, for every witness length $n$ and random seed $s \in \Sigma^r$, $Q(s)$ outputs a sequence of queries $Q_1, \dotsc, Q_m$, each a subset of $\Sigma^n$, and $F(s, A^k_W(Q_1), \dotsc, A^k_W(Q_m))$ outputs an element of $\Sigma^n$.
   For a witness set $W$, the algorithm \emph{succeeds with respect to $W$} if $F$ outputs an element of $W$.
-  The \emph{success probability} of the algorithm is
+  For each collection $\mathcal{W}$ of nonempty subsets of $\Sigma^n$, the \emph{success probability} of the algorithm is
   \begin{equation*}
-    \min_{W \subseteq \Sigma^n} \Pr_{s \in \Sigma^r} [(Q, F) \text{ succeeds with respect to } W].
+    \min_{W \in \mathcal{W}} \Pr_{s \in \Sigma^r} [(Q, F) \text{ succeeds with respect to } W].
   \end{equation*}
-  Parameters $r$ and $m$ are called the \emph{seed length} and \emph{query complexity}.
+  Parameters $r$ and $m$ are called the \emph{seed length} and \emph{query complexity}, respectively.
 
   If $Q$ has access to the intersection query oracle, then the algorithm is called \emph{adaptive}, otherwise it is called \emph{nonadaptive}.
   An adaptive algorithm can only make queries on $Q_1, \dotsc, Q_{i - 1}$ to generate $Q_i$.
 \end{definition}
+
+If not otherwise specified, $\mathcal{W}$ is the power set of $\Sigma^n$, excluding the empty set.
 
 \begin{definition}
   If the oracle $A$ in the above definition is the emptiness oracle, the witness-finding algorithm is called an \emph{emptiness query algorithm}.
@@ -103,11 +105,11 @@ I don't believe the isolation query algorithm has been defined before.
   A \emph{randomized hitting algorithm} (or more briefly, a hitting algorithm) is a randomized Turing machine $P$ with access to the isolation oracle $A^1_W$ where, for every witness length $n$ and random seed $s \in \Sigma^r$, $P(s)$ outputs a sequence of queries $Q_1, \dotsc, Q_m$, each a subset of $\Sigma^n$.
   Each $Q_i$ may depend on the oracle answers to $Q_1, \dotsc, Q_{i - 1}$.
   For a witness set $W$, the algorithm \emph{succeeds with respect to $W$} if $A^1_W(Q_m) = 1$.
-  The \emph{success probability} of the algorithm is
+  For each collection $\mathcal{W}$ of nonempty subsets of $\Sigma^n$, the \emph{success probability} of the algorithm is
   \begin{equation*}
-    \min_{W \subseteq \Sigma^n} \Pr_{s \in \Sigma^r} [P \text{ succeeds with respect to } W].
+    \min_{W \in \mathcal{W}} \Pr_{s \in \Sigma^r} [P \text{ succeeds with respect to } W].
   \end{equation*}
-  The seed length and query complexity are as in the previous definition.
+  Parameters $r$ and $m$ are called the \emph{seed length} and \emph{query complexity}, respectively.
 \end{definition}
 
 This definition is a complexity theoretic restatement of the combinatorial ``hitting game'', as described in \autocite[Section~3]{newport14} (the original definition seems to be from \autocite[Definition~5]{bgi92}).
