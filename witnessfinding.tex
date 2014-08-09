@@ -147,6 +147,8 @@ The problem of finding a hitting algorithm reduces to the problem of finding an 
 On the other hand, there does not seem to be a general reduction from an isolation query algorithm to a hitting algorithm.
 In order to output a single witness knowing only that a witness is contained in a particular query set doesn't help, unless the query set is small; there is no such guarantee on the size of that set.
 
+\todo{Provide evidence that it is unlikely that the existence of hitting algorithm implies the existence of an isolation query algorithm (for example, by showing that such a premise implies a collapse of the polynomial time hierarchy).}
+
 \section{Upper bounds}
 
 \begin{theorem}\label{thm:naive}
@@ -188,6 +190,13 @@ Fortunately, the proof uses the Valiant-Vazirani Isolation Lemma (that is, the s
 \end{corollary}
 
 \todo{Double check this logic.}
+
+\begin{corollary}
+  There is a polynomial time hitting algorithm with success probability $\Omega(1)$ and query complexity $O(n^2)$.
+\end{corollary}
+\begin{proof}
+  Combine the previous corollary with \autoref{lem:reduction}.
+\end{proof}
 
 \section{Lower bounds}
 
