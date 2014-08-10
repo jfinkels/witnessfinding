@@ -173,10 +173,10 @@ In order to output a single witness knowing only that a witness is contained in 
 
   First, consider a simpler set of queries.
   Let $s$ be a string in $\Sigma^r$.
-  For each $i \in [n]$ and each $b \in \Sigma$, let $Q_{i, b} = \{ w | w \in C_s \land w_i = b\}$, where $C$ is the isolating set from the Valiant--Vazirani Isolation Lemma (for example, the set of all strings whose image is zero under a pairwise independent hash function).
+  For each $i \in [n]$ and each $b \in \Sigma$, let $Q_{i, b} = \{ w \, | \, w \in C_s \land w_i = b\}$, where $C$ is the isolating set from the Valiant--Vazirani Isolation Lemma (for example, the set of all strings whose image is zero under a pairwise independent hash function).
   The Valiant--Vazirani Isolation Lemma proves that this algorithm has success probability $\Omega(\frac{1}{n})$ and query complexity $O(n)$.
   In order to get success probability $\Omega(1)$, we create $O(n)$ collections of $O(n)$ queries, with an independent set $C_{s_k}$ for each collection.
-  Now our queries are $Q_{k, i, b} = \{ w | w \in C_{s_k} \land w_i = b\}$, for each $s_k \in \left[O(n)\right]$, each $i$, and each $b$.
+  Now our queries are $Q_{k, i, b} = \{ w \, | \, w \in C_{s_k} \land w_i = b\}$, for each $k \in \left[O(n)\right]$, each $i$, and each $b$.
 
   (Remember, the oracle answers queries of the form ``is $Q \cap W$ empty?'', so if we want to determine whether $Q \cap W$ is \emph{not} empty, we must complement each oracle's answers.)
 \end{proof}
