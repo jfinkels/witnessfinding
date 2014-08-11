@@ -19,7 +19,7 @@
 \usepackage{csquotes}
 \usepackage[backend=biber]{biblatex}
 \usepackage{amsmath}
-%\usepackage{amssymb}
+\usepackage{amssymb}
 \usepackage{complexity}
 
 \hypersetup{pdftitle={Lower bounds for witness-finding algorithms}, pdfauthor={Jeffrey Finkelstein}}
@@ -28,11 +28,13 @@
 
 \declaretheorem[numberwithin=section]{theorem}
 \declaretheorem[numberlike=theorem]{lemma}
+\declaretheorem[numberlike=theorem]{proposition}
 \declaretheorem[numberlike=theorem]{corollary}
+\declaretheorem[numberlike=theorem]{conjecture}
 \declaretheorem[numberlike=theorem, style=definition]{definition}
 
-\newcommand{\pow}{\mathcal{P}}
 \newcommand{\todo}[1]{\textbf{TODO #1}}
+\newcommand{\mc}{\mathcal}
 
 \title{Lower bounds for witness-finding algorithms}
 \author{Jeffrey Finkelstein}
@@ -52,62 +54,93 @@
 %% conclusion
 %% perspectives
 
+\todo{Compare these randomized witness-finding algorithms with ``bounded query hierarchy'' algorithms, in which the query generator and the witness generator are not randomized (but possibly nondeterministic), and the goal is to decide a language, not necessarily output a witness.}
+
 \section{Definitions}
 
 Let $\Sigma = \{0, 1\}$.
+For each $b \in \{0, 1\}$, let $\bar{b} = 1 - b$.
 Let $[n] = \{1, \dotsc, n\}$.
 
-A language $L \subseteq \Sigma^*$ is a \emph{witnessed language} if there exists a language $L' \subseteq \Sigma^* \times \Sigma^*$, called the \emph{witness relation}, such that $x \in L$ if and only if there is a $w \in \Sigma^*$ such that $(x, w) \in L'$.
+A language $L \subseteq \Sigma^*$ is a \emph{witnessed language} if there exists a language $L' \subseteq \Sigma^* \times \Sigma^*$, called the \emph{witness relation}, such that for each $x$ of length $n$, we have $x \in L$ if and only if there is a $w \in \Sigma^n$ such that $(x, w) \in L'$.
+(We don't consider strings $w$ of length polynomial in $n$ because a language in any ``well-behaved'' complexity class can be converted to an equivalent language in which all witnesses have length exactly $n$ by padding the string $x$ by an appropriate amount.)
 
 \begin{definition}[{\autocite[Definition~1]{krw12}}]
   Suppose $n$ is a positive integer and $k \in [2^n]$.
   A \emph{witness set} is a nonempty subset of $\Sigma^n$ denoted by $W$, and each element of $W$ is a \emph{witness}.
-  An \emph{intersection query} (contrast with intersection queries defined in \autocite{krw14}) is a set $Q \subseteq \Sigma^n$ interpreted as the question ``does $|Q \cap W| = k$?''.
-
-  An \emph{intersection oracle} is a function $A^k_W \colon \Sigma^n \to \{0, 1\}$ such that $A^k_W(Q) = 1$ if and only if $|Q \cap W| = k$.
-  %% Let $A_W(Q) \in \{0, 1\}$ denote the answer to the query $Q$, formally $A_W(Q) = 1$ if and only if $Q \cap W \noteq \emptyset$.
+  An \emph{intersection query} (contrast with intersection queries defined in \autocite{krw14}) is a predicate $f \colon \mathbb{N} \to \{0, 1\}$ and a set $Q \subseteq \Sigma^n$ interpreted as the question ``does $f(|Q \cap W|) = 1$?''.
+  An \emph{intersection oracle} is a function $A^f_W \colon \Sigma^n \to \{0, 1\}$ defined by $A^f_W(Q) = f(|Q \cap W|)$.
 \end{definition}
 
-If $k = 0$, the intersection query is called an \emph{emptiness query} and the intersection oracle $A^0_W$ is called the \emph{emptiness oracle}.
-If $k = 1$, the intersection query is called an \emph{isolation query} and the intersection oracle $A^0_W$ is called the \emph{isolation oracle}.
+\begin{definition}
+  Suppose $W$ is a witness set, $f$ is a predicate on natural numbers, and $A^f_W$ is an intersection oracle.
+  For each natural number $k$ and $\ell$, if $f(\ell)$ is the indicator function for $\ell = k$, then the intersection oracle is denoted $A^{=k}_W$.
+  If $f(\ell)$ is the indicator function for $\ell \geq k$, then the intersection oracle is denoted $A^{\geq k}_W$.
+  Similar notation is used for the other inequalities.
+\end{definition}
 
-Suppose a language $L$ is a witnessed language with witness relation $L'$.
-If $L'$ is in $\P$, then the emptiness oracle can be interpreted as a $\coNP$ oracle (which is equivalent to an $\NP$ oracle by complementation) and the isolation oracle can be interpreted as a $\US$ oracle ($\US$ was defined in \autocite{bg82}).
-In other words, $A^0_W$ acts as an oracle for \textsc{Satisfiability} and $A^1_W$ for \textsc{Unique Satisfiability}.
-(For context, $\coNP \subseteq \US \subseteq \BH_2 \subseteq \P^\NP$.)
+If $f(\ell)$ is the indicator for $\ell = 0$, then the intersection query is called an \emph{emptiness query} and the intersection oracle $A^{=0}_W$ is called the \emph{emptiness oracle}.
+If $f(\ell)$ is the indicator for $\ell = 1$, the intersection query is called an \emph{isolation query} and the intersection oracle $A^{=1}_W$ is called the \emph{isolation oracle}.
 
 \begin{definition}
-  Let $k$ be an integer.
-  Suppose, for any fixed witness set $W$, $A^k_W$ is an intersection query oracle.
-  A \emph{randomized witness-finding query algorithm} (or more briefly, a witness-finding algorithm) is a pair $(Q, F)$ of randomized Turing machines where, for every witness length $n$ and random seed $s \in \Sigma^r$, $Q(s)$ outputs a sequence of queries $Q_1, \dotsc, Q_m$, each a subset of $\Sigma^n$, and $F(s, A^k_W(Q_1), \dotsc, A^k_W(Q_m))$ outputs an element of $\Sigma^n$.
-  For a witness set $W$, the algorithm \emph{succeeds with respect to $W$} if $F$ outputs an element of $W$.
-  For each collection $\mathcal{W}$ of nonempty subsets of $\Sigma^n$, the \emph{success probability} of the algorithm is
+  Let $f$ be a predicate on natural numbers.
+  %Suppose, for any fixed witness set $W$, $A^f_W$ is an intersection query oracle.
+  A \emph{randomized witness-finding query algorithm} (or more briefly, a witness-finding algorithm) is a pair $(\mc{Q}, \mc{F})$ of randomized Turing machines where, for every witness length $n$ and random seed $s \in \Sigma^r$, $\mc{Q}(s)$ outputs a sequence of queries $Q_1, \dotsc, Q_m$, each a subset of $\Sigma^n$, and $\mc{F}(s, A^f_W(Q_1), \dotsc, A^f_W(Q_m))$ outputs an element of $\Sigma^n$.
+  For a witness set $W$, the algorithm \emph{succeeds with respect to $W$} if $\mc{F}$ outputs an element of $W$.
+  For each collection $\mc{W}$ of nonempty subsets of $\Sigma^n$, the \emph{success probability} of the algorithm is
   \begin{equation*}
-    \min_{W \in \mathcal{W}} \Pr_{s \in \Sigma^r} [(Q, F) \text{ succeeds with respect to } W].
+    \min_{W \in \mc{W}} \Pr_{s \in \Sigma^r} [(\mc{Q}, \mc{F}) \text{ succeeds with respect to } W].
   \end{equation*}
   Parameters $r$ and $m$ are called the \emph{seed length} and \emph{query complexity}, respectively.
 
-  If $Q$ has access to the intersection query oracle, then the algorithm is called \emph{adaptive}, otherwise it is called \emph{nonadaptive}.
+  If $\mc{Q}$ has access to the intersection query oracle, then the algorithm is called \emph{adaptive}, otherwise it is called \emph{nonadaptive}.
   An adaptive algorithm can only make queries on $Q_1, \dotsc, Q_{i - 1}$ to generate $Q_i$.
 \end{definition}
 
-If not otherwise specified, $\mathcal{W}$ is the power set of $\Sigma^n$, excluding the empty set.
+If not otherwise specified, $\mc{W}$ is the power set of $\Sigma^n$, excluding the empty set.
+
+Suppose a language $L$ is a witnessed language with witness relation $L'$.
+If $L'$ is in $\P$, then the emptiness oracle can be interpreted as a $\coNP$ oracle (which is equivalent to an $\NP$ oracle by complementation) and the isolation oracle can be interpreted as a $\US$ oracle ($\US$ was defined in \autocite{bg82}).
+In other words, $A^{=0}_W$ acts as an oracle for \textsc{Satisfiability} and $A^{=1}_W$ for \textsc{Unique Satisfiability}.
+(For context, $\coNP \subseteq \US \subseteq \BH_2 \subseteq \P^\NP$.)
+The equivalence of the $\NP$ and $\coNP$ oracles is given by the following proposition.
+
+\begin{proposition}
+  Suppose $W$ is a witness set.
+  There is a witness-finding algorithm with oracle $A^{=0}_W$ if and only if there is a witness-finding algorithm with oracle $A^{>0}_W$.
+  Furthermore, the seed length, success probability, and query complexity of the algorithms are exactly the same.
+\end{proposition}
+\begin{proof}
+  For any query set $Q$, by definition we have
+  \begin{equation*}
+    \overline{A^{=0}_W(Q)} = A^{\neq 0}_W(Q) = A^{> 0}_W(Q),
+  \end{equation*}
+  so if we define $\overline{\mc{F}}$ by
+  \begin{equation*}
+    \overline{\mc{F}}(s, A_1, \dotsc, A_m) = \mc{F}(s, \overline{A_1}, \dotsc, \overline{A_m}),
+  \end{equation*}
+  for all random seeds $s$ and all possible oracle answers $A_1, \dotsc, A_M$, we get the desired equivalence: $(\mc{Q}, \mc{F})$ is equivalent to $(\mc{Q}, \overline{\mc{F}})$.
+\end{proof}
+
+However, unlike a true $\NP$ oracle, the oracle $A^f_W$ can only answer questions about a \emph{single} witness set $W$.
+If we consider each witness set to have a corresponding input string $x$, a true $\NP$ oracle would be able to answer questions about any arbitrary input string $x$, and therefore any arbitrary witness set $W$.
+An intersection oracle is \emph{weaker} than a standard oracle for an arbitrary language.
 
 \begin{definition}
-  If the oracle $A$ in the above definition is the emptiness oracle, the witness-finding algorithm is called an \emph{emptiness query algorithm}.
-  If it is the isolation oracle, the algorithm is called an \emph{isolation query algorithm}.
+  If the oracle in the above definition is the emptiness oracle $A^{=0}_W$, the witness-finding algorithm is called an \emph{emptiness query algorithm}.
+  If it is the isolation oracle $A^{=1}_W$, the algorithm is called an \emph{isolation query algorithm}.
 \end{definition}
 
 The emptiness query algorithm is the same as \autocite[Definition~2]{krw12}.
 I don't believe the isolation query algorithm has been defined before.
 
 \begin{definition}
-  A \emph{randomized hitting algorithm} (or more briefly, a hitting algorithm) is a randomized Turing machine $P$ with access to the isolation oracle $A^1_W$ where, for every witness length $n$ and random seed $s \in \Sigma^r$, $P(s)$ outputs a sequence of queries $Q_1, \dotsc, Q_m$, each a subset of $\Sigma^n$.
+  A \emph{randomized hitting algorithm} (or more briefly, a hitting algorithm) is a randomized Turing machine $\mc{P}$ with access to the isolation oracle $A^{=1}_W$ where, for every witness length $n$ and random seed $s \in \Sigma^r$, $P(s)$ outputs a sequence of queries $Q_1, \dotsc, Q_m$, each a subset of $\Sigma^n$.
   Each $Q_i$ may depend on the oracle answers to $Q_1, \dotsc, Q_{i - 1}$.
-  For a witness set $W$, the algorithm \emph{succeeds with respect to $W$} if $A^1_W(Q_m) = 1$.
-  For each collection $\mathcal{W}$ of nonempty subsets of $\Sigma^n$, the \emph{success probability} of the algorithm is
+  For a witness set $W$, the algorithm \emph{succeeds with respect to $W$} if $A^{=1}_W(Q_m) = 1$.
+  For each collection $\mc{W}$ of nonempty subsets of $\Sigma^n$, the \emph{success probability} of the algorithm is
   \begin{equation*}
-    \min_{W \in \mathcal{W}} \Pr_{s \in \Sigma^r} [P \text{ succeeds with respect to } W].
+    \min_{W \in \mc{W}} \Pr_{s \in \Sigma^r} [\mc{P} \text{ succeeds with respect to } W].
   \end{equation*}
   Parameters $r$ and $m$ are called the \emph{seed length} and \emph{query complexity}, respectively.
 \end{definition}
@@ -129,19 +162,19 @@ The problem of finding a hitting algorithm reduces to the problem of finding an 
   Then there is a hitting algorithm with success probability $p$ and query complexity $m + 1$.
 \end{lemma}
 \begin{proof}
-  Suppose $(Q, F)$ is the isolation query algorithm.
-  Construct hitting algorithm $P$ with access to isolation oracle $A^1_W$ as follows.
+  Suppose $(\mc{Q}, \mc{F})$ is the isolation query algorithm.
+  Construct hitting algorithm $\mc{P}$ with access to isolation oracle $A^{=1}_W$ as follows.
   \begin{itemize}
-  \item simulate $Q(s)$ to generate queries $Q_1, \dotsc, Q_m$ (simulating access to the isolation oracle if adaptivity is required)
-  \item send those queries to the oracle $A^1_W$ to get answers $A_1, \dotsc, A_m$
-  \item simulate $F(s, A_1, \dotsc, A_m)$ to output a string $w$.
+  \item simulate $\mc{Q}(s)$ to generate queries $Q_1, \dotsc, Q_m$ (simulating access to the isolation oracle if adaptivity is required)
+  \item send those queries to the oracle $A^{=1}_W$ to get answers $A_1, \dotsc, A_m$
+  \item simulate $\mc{F}(s, A_1, \dotsc, A_m)$ to output a string $w$.
   \item let $Q_{m + 1} = \{ w \}$ and output $Q_1, \dotsc, Q_{m + 1}$
   \end{itemize}
 
-  Let $W$ be an arbitrary witness set and suppose the success probability of the isolation query algorithm $(Q, F)$ is $p$.
+  Let $W$ be an arbitrary witness set and suppose the success probability of the isolation query algorithm $(\mc{Q}, \mc{F})$ is $p$.
   This is the probability that $w \in W$, or in other words, the probability that $|Q_{m + 1} \cap W| = 1$.
-  Since $Q_{m + 1}$ is the last query set output by $P$, the probability that $P$ succeeds with respect to $W$ equals the probability that $(Q, F)$ succeeds with respect to $W$.
-  Thus $P$ has success probability $p$ and query complexity $m + 1$.
+  Since $Q_{m + 1}$ is the last query set output by $\mc{P}$, the probability that $P$ succeeds with respect to $W$ equals the probability that $(\mc{Q}, \mc{F})$ succeeds with respect to $W$.
+  Thus $\mc{P}$ has success probability $p$ and query complexity $m + 1$.
 \end{proof}
 
 On the other hand, there does not seem to be a general reduction from an isolation query algorithm to a hitting algorithm.
@@ -237,6 +270,50 @@ Such queries are \emph{monotone queries} (that is, if $W \subseteq W'$, then $Q 
 \end{theorem}
 
 \todo{I can't understand what the random variable is for which there is an expectation here.}
+
+\section{Reductions to counting classes}
+
+In \autocite[Section~7]{green93}, Fred asks, ``Does the hypothesis $\P^{\CeP} = \P^\PP$ have any dramatic consequences?''
+Our intuition is that $\P^{\CeP}$ is less powerful than $\P^\PP$, because the latter can determine the exact number of accepting paths in a computation (or in other words, the number of witnesses in a witness set) by a binary search, whereas the former does not seem to admit this possibility.
+On the contrary, we know that $\NP^\PP = \NP^{\CeP}$.
+
+There is a superficial similarity to the question ``is $\P^\PP$ a subset of $\P^{\CeP}$?'' and the question ``does a witness-finding algorithm with oracle $A^{\geq k}_W$ imply a witness-finding algorithm with oracle $A^{= k}_W$?''
+However, we run into a few problems when trying to prove that one implies the other.
+
+\begin{conjecture}
+  If $\P^\PP \subseteq \P^{\CeP}$, then a witness-finding algorithm with oracle $A^{\geq k}_W$ implies a witness-finding algorithm with oracle $A^{= k}_W$.
+\end{conjecture}
+\begin{proof}[Broken proof]
+  Let $W$ be any witness set.
+  Let $(\mc{Q}, \mc{F})$ be a witness-finding algorithm with oracle $A^{= k}_W$.
+  Let $L$ be a witnessed language with witness relation $L'$.
+  The problem of deciding whether $|Q \cap W| \geq k$ given any query set $Q$ can be decided by a $\PP$ oracle.
+  Construct machine $M$ with access to that oracle as follows on random string $s$ of length $r$.
+  \begin{itemize}
+  \item Run $\mc{Q}(s)$ to generate queries $Q_1, \dotsc, Q_m$, simulating access to the $\PP$ oracle (acting as the $A^{\geq k}_W$ oracle) when necessary.
+  \item Get query answers $A_1, \dotsc, A_m$ from the oracle.
+  \item Run $\mc{F}(s, A_1, \dotsc, A_m)$ to get potential witness $w$.
+  \item Decide if $(x, w) \in L'$.
+  \end{itemize}
+  \todo{Problem 1: okay, this is a randomized algorithm, not a deterministic one.}
+  By our hypothesis that $\P^\PP \subseteq \P^{\CeP}$, there is also an oracle machine $M'$ that decides $L$ with access to a $\CeP$ oracle.
+  Now we wish to use $M'$ to construct a witness-finding algorithm $(\mc{Q}', \mc{F}')$ with access to oracle $A^{= k}_W$.
+
+  Define $\mc{Q}$ as follows on random string $s$ of length $r$.
+  \begin{itemize}
+  \item Run $M'(x, s)$ and intercept each query $q_1, \dotsc, q_{m(n)}$ that it would make to the $\CeP$ oracle.
+    \todo{Problem 2: $M'$ needs access to a particular input string $x$; we may be able to modify the definition of the witness-finding algorithms to allow this.}
+    Each query $q_i$ is a question of the form ``is $|W_{q_i}| = k$?'', where $W_{q_i}$ is a witness set that corresponds to the input string $q_i$, so we simulate those queries by sending the query set $W_{q_i}$ to the oracle $A^{= k}_W$.
+    \todo{Problem 3: this won't work, since $A^{= k}_W$ only answers questions of the form ``is $|W_{q_i} \cap W| = k$?'', but we need it to answer questions like ``is $|W_{q_i}| = k$?'', and we don't get to choose the arbitrary witness set $W$.}
+  \item Output the queries $W_{q_1}, \dotsc, W_{q_{m(n)}}$.
+  \end{itemize}
+  Define $\mc{F}$ as follows on random string $s$ and oracle answers $A_1, \dotsc, A_{m(n)}$.
+  \begin{itemize}
+  \item Run $M'(x, s)$ and when $M'$ makes query $q_i$, provide answer $A_i$ to it.
+  \item \todo{Problem 4: at this point, all $M'$ tells us is that there is a witness (or none); it gives no indication as to what the witness is.
+    If one of the queries causes the oracle to answer yes and the size of the query set is not too large, we could simply output a random element of the query set for a small penalty in success probability, but in general we have no such guarantees.}
+  \end{itemize}
+\end{proof}
 
 \section{Todo}
 
