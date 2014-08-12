@@ -300,7 +300,7 @@ However, we run into a few problems when trying to prove that one implies the ot
   By our hypothesis that $\RP^\PP \subseteq \RP^{\CeP}$, there is also a randomized oracle machine $M'$ that decides $L$ with access to a $\CeP$ oracle.
   Now we wish to use $M'$ to construct a witness-finding algorithm $(\mc{Q}', \mc{F}')$ with access to oracle $A^{= k}_W$.
 
-  Define $\mc{Q}$ as follows on random string $s$ of length $r$.
+  Define $\mc{Q}'$ as follows on random string $s$ of length $r$.
   \begin{itemize}
   \item Run $M'(x, s)$ and intercept each query $q_1, \dotsc, q_{m(n)}$ that it would make to the $\CeP$ oracle.
     \todo{Problem 2: $M'$ needs access to a particular input string $x$; we may be able to modify the definition of the witness-finding algorithms to allow this.}
@@ -308,7 +308,7 @@ However, we run into a few problems when trying to prove that one implies the ot
     \todo{Problem 3: this won't work, since $A^{= k}_W$ only answers questions of the form ``is $|W_{q_i} \cap W| = k$?'', but we need it to answer questions like ``is $|W_{q_i}| = k$?'', and we don't get to choose the arbitrary witness set $W$.}
   \item Output the queries $W_{q_1}, \dotsc, W_{q_{m(n)}}$.
   \end{itemize}
-  Define $\mc{F}$ as follows on random string $s$ and oracle answers $A_1, \dotsc, A_{m(n)}$.
+  Define $\mc{F}'$ as follows on random string $s$ and oracle answers $A_1, \dotsc, A_{m(n)}$.
   \begin{itemize}
   \item Run $M'(x, s)$ and when $M'$ makes query $q_i$, provide answer $A_i$ to it.
   \item \todo{Problem 4: at this point, all $M'$ tells us is that there is a witness (or none); it gives no indication as to what the witness is.
