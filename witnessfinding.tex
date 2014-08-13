@@ -180,7 +180,19 @@ The problem of finding a hitting algorithm reduces to the problem of finding an 
 On the other hand, there does not seem to be a general reduction from an isolation query algorithm to a hitting algorithm.
 In order to output a single witness knowing only that a witness is contained in a particular query set doesn't help, unless the query set is small; there is no such guarantee on the size of that set.
 
-\todo{Provide evidence that it is unlikely that the existence of hitting algorithm implies the existence of an isolation query algorithm (for example, by showing that such a premise implies a collapse of the polynomial time hierarchy).}
+\begin{conjecture}
+  If the existence of a hitting algorithm implies the existence of an isolation query algorithm, then $\RP = \NP$.
+\end{conjecture}
+
+Now, consider the possibility that a witness-finding algorithm with intersection query oracle $A^{= k}_W$ implies an algorithm with oracle $A^{= k - 1}_W$.
+Intuitively, in order for this to work, the latter algorithm would have to simulate the queries $Q_i$ from the former algorithm with some sort of collection of queries of the form $Q_i \setminus \{q_{i, j}$, where $q_{i, j}$ is the $j$th member of $Q_i$.
+However, the oracle answers would be inconsistent, because we don't know beforehand whether $q_{i, j}$ is in the witness set or not (causing a discrepancy between the answers of the two oracles).
+A similar problem arises when attempting the converse simulation: the simulated queries would be something of the form $Q_i \cup \{v_j\}$, where $v_j$ is the $j$th element of $\Sigma^n \setminus Q_i$, thus there would be a discrepancy between the answers of the two oracles.
+We therefore conjecture that there is evidence that such a simulation is unlikely.
+
+\begin{conjecture}
+  For any natural number $k$, if the existence of a witness-finding algorithm with intersection query oracle $A^{= k}_W$ implies the existence of a witness-finding algorithm with intersection query oracle $A^{= k + 1}_W$, then $\RP = \NP$.
+\end{conjecture}
 
 \section{Upper bounds}
 
