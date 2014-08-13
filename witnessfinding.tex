@@ -213,8 +213,8 @@ We therefore conjecture that there is evidence that such a simulation is unlikel
   This is the well-known bit-by-bit $\P^\NP$ computable function for computing a witness for a given string.
 
   For each $i \in [n]$ and each $b \in \{0, 1\}$, define the query $Q_{i, b}$ inductively (or in other words, adaptively) as follows.
-  If $i = 1$, then $Q_{i, b} = \{ b v | v \in {\{0, 1\}}^{n - 1}\}$.
-  For each subsequent pair of queries, let $u = b_1 \dotsb b_{i - 1}$, where $b_j$ is a bit that caused the oracle to answer ``yes'' on query $Q_{j, b_j}$ for each $j \in [i - 1]$, and let $Q_{i, b} = \{ u b v | v \in {\{0, 1\}}^{n - i}\}$.
+  If $i = 1$, then $Q_{i, b} = \{ b v \, | \, v \in {\{0, 1\}}^{n - 1}\}$.
+  For each subsequent pair of queries, let $u = b_1 \dotsb b_{i - 1}$, where $b_j$ is a bit that caused the oracle to answer ``yes'' on query $Q_{j, b_j}$ for each $j \in [i - 1]$, and let $Q_{i, b} = \{ u b v \, | \, v \in {\{0, 1\}}^{n - i}\}$.
   Finally, given the responses to $Q_{n, 0}$ and $Q_{n, 1}$, which are singleton sets, the algorithm simply outputs the sole element of the query set that caused the oracle to answer ``yes''.
 
   The total number of queries is $2n$, which is in $O(n)$.
