@@ -204,6 +204,51 @@ We therefore conjecture that there is evidence that such a simulation is unlikel
   For any natural number $k$, if the existence of a witness-finding algorithm with intersection query oracle $A^{= k}_W$ implies the existence of a witness-finding algorithm with intersection query oracle $A^{= k + 1}_W$, then $\RP = \NP$.
 \end{conjecture}
 
+\subsection{Reductions to counting classes}
+
+In \autocite[Section~7]{green93}, Fred asks, ``Does the hypothesis $\P^{\CeP} = \P^\PP$ have any dramatic consequences?''
+Our intuition is that $\P^{\CeP}$ is less powerful than $\P^\PP$, because the latter can determine the exact number of accepting paths in a computation (or in other words, the number of witnesses in a witness set) by a binary search, whereas the former does not seem to admit this possibility.
+On the contrary, we know that $\NP^\PP = \NP^{\CeP}$.
+Perhaps a first step toward comparing $\P^\PP$ and $\P^{\CeP}$ is comparing $\RP^\PP$ and $\RP^{\CeP}$.
+
+There is a superficial similarity to the question ``is $\RP^\PP$ a subset of $\RP^{\CeP}$?'' and the question ``does a witness-finding algorithm with oracle $A^{\geq k}_W$ imply a witness-finding algorithm with oracle $A^{= k}_W$?''
+However, we run into a few problems when trying to prove that one implies the other.
+
+\begin{conjecture}
+  If $\RP^\PP \subseteq \RP^{\CeP}$, then a witness-finding algorithm with oracle $A^{\geq k}_W$ implies a witness-finding algorithm with oracle $A^{= k}_W$.
+\end{conjecture}
+\begin{proof}[Broken proof]
+  Let $W$ be any witness set.
+  Let $(\mc{Q}, \mc{F})$ be a witness-finding algorithm with oracle $A^{= k}_W$.
+  Let $L$ be a witnessed language with witness relation $L'$.
+  The problem of deciding whether $|Q \cap W| \geq k$ given any query set $Q$ can be decided by a $\PP$ oracle.
+  Construct machine $M$ with access to that oracle as follows on random string $s$ of length $r$.
+  \begin{itemize}
+  \item Run $\mc{Q}(s)$ to generate queries $Q_1, \dotsc, Q_m$, simulating access to the $\PP$ oracle (acting as the $A^{\geq k}_W$ oracle) when necessary.
+  \item Get query answers $A_1, \dotsc, A_m$ from the oracle.
+  \item Run $\mc{F}(s, A_1, \dotsc, A_m)$ to get potential witness $w$.
+  \item Decide if $(x, w) \in L'$.
+  \end{itemize}
+  \todo{Problem 1: need to show that this is a correct $\RP^\PP$ algorithm.}
+  By our hypothesis that $\RP^\PP \subseteq \RP^{\CeP}$, there is also a randomized oracle machine $M'$ that decides $L$ with access to a $\CeP$ oracle.
+  Now we wish to use $M'$ to construct a witness-finding algorithm $(\mc{Q}', \mc{F}')$ with access to oracle $A^{= k}_W$.
+
+  Define $\mc{Q}'$ as follows on random string $s$ of length $r$.
+  \begin{itemize}
+  \item Run $M'(x, s)$ and intercept each query $q_1, \dotsc, q_{m(n)}$ that it would make to the $\CeP$ oracle.
+    \todo{Problem 2: $M'$ needs access to a particular input string $x$; we may be able to modify the definition of the witness-finding algorithms to allow this.}
+    Each query $q_i$ is a question of the form ``is $|W_{q_i}| = k$?'', where $W_{q_i}$ is a witness set that corresponds to the input string $q_i$, so we simulate those queries by sending the query set $W_{q_i}$ to the oracle $A^{= k}_W$.
+    \todo{Problem 3: this won't work, since $A^{= k}_W$ only answers questions of the form ``is $|W_{q_i} \cap W| = k$?'', but we need it to answer questions like ``is $|W_{q_i}| = k$?'', and we don't get to choose the arbitrary witness set $W$.}
+  \item Output the queries $W_{q_1}, \dotsc, W_{q_{m(n)}}$.
+  \end{itemize}
+  Define $\mc{F}'$ as follows on random string $s$ and oracle answers $A_1, \dotsc, A_{m(n)}$.
+  \begin{itemize}
+  \item Run $M'(x, s)$ and when $M'$ makes query $q_i$, provide answer $A_i$ to it.
+  \item \todo{Problem 4: at this point, all $M'$ tells us is that there is a witness (or none); it gives no indication as to what the witness is.
+    If one of the queries causes the oracle to answer yes and the size of the query set is not too large, we could simply output a random element of the query set for a small penalty in success probability, but in general we have no such guarantees.}
+  \end{itemize}
+\end{proof}
+
 \section{Upper bounds}
 
 \begin{theorem}\label{thm:naive}
@@ -292,51 +337,6 @@ Such queries are \emph{monotone queries} (that is, if $W \subseteq W'$, then $Q 
 \end{theorem}
 
 \todo{I can't understand what the random variable is for which there is an expectation here.}
-
-\section{Reductions to counting classes}
-
-In \autocite[Section~7]{green93}, Fred asks, ``Does the hypothesis $\P^{\CeP} = \P^\PP$ have any dramatic consequences?''
-Our intuition is that $\P^{\CeP}$ is less powerful than $\P^\PP$, because the latter can determine the exact number of accepting paths in a computation (or in other words, the number of witnesses in a witness set) by a binary search, whereas the former does not seem to admit this possibility.
-On the contrary, we know that $\NP^\PP = \NP^{\CeP}$.
-Perhaps a first step toward comparing $\P^\PP$ and $\P^{\CeP}$ is comparing $\RP^\PP$ and $\RP^{\CeP}$.
-
-There is a superficial similarity to the question ``is $\RP^\PP$ a subset of $\RP^{\CeP}$?'' and the question ``does a witness-finding algorithm with oracle $A^{\geq k}_W$ imply a witness-finding algorithm with oracle $A^{= k}_W$?''
-However, we run into a few problems when trying to prove that one implies the other.
-
-\begin{conjecture}
-  If $\RP^\PP \subseteq \RP^{\CeP}$, then a witness-finding algorithm with oracle $A^{\geq k}_W$ implies a witness-finding algorithm with oracle $A^{= k}_W$.
-\end{conjecture}
-\begin{proof}[Broken proof]
-  Let $W$ be any witness set.
-  Let $(\mc{Q}, \mc{F})$ be a witness-finding algorithm with oracle $A^{= k}_W$.
-  Let $L$ be a witnessed language with witness relation $L'$.
-  The problem of deciding whether $|Q \cap W| \geq k$ given any query set $Q$ can be decided by a $\PP$ oracle.
-  Construct machine $M$ with access to that oracle as follows on random string $s$ of length $r$.
-  \begin{itemize}
-  \item Run $\mc{Q}(s)$ to generate queries $Q_1, \dotsc, Q_m$, simulating access to the $\PP$ oracle (acting as the $A^{\geq k}_W$ oracle) when necessary.
-  \item Get query answers $A_1, \dotsc, A_m$ from the oracle.
-  \item Run $\mc{F}(s, A_1, \dotsc, A_m)$ to get potential witness $w$.
-  \item Decide if $(x, w) \in L'$.
-  \end{itemize}
-  \todo{Problem 1: need to show that this is a correct $\RP^\PP$ algorithm.}
-  By our hypothesis that $\RP^\PP \subseteq \RP^{\CeP}$, there is also a randomized oracle machine $M'$ that decides $L$ with access to a $\CeP$ oracle.
-  Now we wish to use $M'$ to construct a witness-finding algorithm $(\mc{Q}', \mc{F}')$ with access to oracle $A^{= k}_W$.
-
-  Define $\mc{Q}'$ as follows on random string $s$ of length $r$.
-  \begin{itemize}
-  \item Run $M'(x, s)$ and intercept each query $q_1, \dotsc, q_{m(n)}$ that it would make to the $\CeP$ oracle.
-    \todo{Problem 2: $M'$ needs access to a particular input string $x$; we may be able to modify the definition of the witness-finding algorithms to allow this.}
-    Each query $q_i$ is a question of the form ``is $|W_{q_i}| = k$?'', where $W_{q_i}$ is a witness set that corresponds to the input string $q_i$, so we simulate those queries by sending the query set $W_{q_i}$ to the oracle $A^{= k}_W$.
-    \todo{Problem 3: this won't work, since $A^{= k}_W$ only answers questions of the form ``is $|W_{q_i} \cap W| = k$?'', but we need it to answer questions like ``is $|W_{q_i}| = k$?'', and we don't get to choose the arbitrary witness set $W$.}
-  \item Output the queries $W_{q_1}, \dotsc, W_{q_{m(n)}}$.
-  \end{itemize}
-  Define $\mc{F}'$ as follows on random string $s$ and oracle answers $A_1, \dotsc, A_{m(n)}$.
-  \begin{itemize}
-  \item Run $M'(x, s)$ and when $M'$ makes query $q_i$, provide answer $A_i$ to it.
-  \item \todo{Problem 4: at this point, all $M'$ tells us is that there is a witness (or none); it gives no indication as to what the witness is.
-    If one of the queries causes the oracle to answer yes and the size of the query set is not too large, we could simply output a random element of the query set for a small penalty in success probability, but in general we have no such guarantees.}
-  \end{itemize}
-\end{proof}
 
 \section{Todo}
 
