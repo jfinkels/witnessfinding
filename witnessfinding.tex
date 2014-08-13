@@ -103,24 +103,6 @@ Suppose a language $L$ is a witnessed language with witness relation $L'$.
 If $L'$ is in $\P$, then the emptiness oracle can be interpreted as a $\coNP$ oracle (which is equivalent to an $\NP$ oracle by complementation) and the isolation oracle can be interpreted as a $\US$ oracle ($\US$ was defined in \autocite{bg82}).
 In other words, $A^{=0}_W$ acts as an oracle for \textsc{Satisfiability} and $A^{=1}_W$ for \textsc{Unique Satisfiability}.
 (For context, $\coNP \subseteq \US \subseteq \BH_2 \subseteq \P^\NP$.)
-The equivalence of the $\NP$ and $\coNP$ oracles is given by the following proposition.
-
-\begin{proposition}
-  Suppose $W$ is a witness set.
-  There is a witness-finding algorithm with oracle $A^{=0}_W$ if and only if there is a witness-finding algorithm with oracle $A^{>0}_W$.
-  Furthermore, the seed length, success probability, and query complexity of the algorithms are exactly the same.
-\end{proposition}
-\begin{proof}
-  For any query set $Q$, by definition we have
-  \begin{equation*}
-    \overline{A^{=0}_W(Q)} = A^{\neq 0}_W(Q) = A^{> 0}_W(Q),
-  \end{equation*}
-  so if we define $\overline{\mc{F}}$ by
-  \begin{equation*}
-    \overline{\mc{F}}(s, A_1, \dotsc, A_m) = \mc{F}(s, \overline{A_1}, \dotsc, \overline{A_m}),
-  \end{equation*}
-  for all random seeds $s$ and all possible oracle answers $A_1, \dotsc, A_M$, we get the desired equivalence: $(\mc{Q}, \mc{F})$ is equivalent to $(\mc{Q}, \overline{\mc{F}})$.
-\end{proof}
 
 However, unlike a true $\NP$ oracle, the oracle $A^f_W$ can only answer questions about a \emph{single} witness set $W$.
 If we consider each witness set to have a corresponding input string $x$, a true $\NP$ oracle would be able to answer questions about any arbitrary input string $x$, and therefore any arbitrary witness set $W$.
@@ -155,6 +137,34 @@ A witness-finding algorithm must output an element of $W$, whereas a hitting alg
 
 \section{Relationship among algorithms}
 
+The equivalence of the $\NP$ and $\coNP$ oracles suggested in the previous section is given by a corollary to the following proposition.
+
+\begin{proposition}
+  Suppose $W$ is a witness set and $k$ is a natural number.
+  There is a witness-finding algorithm with intersection query oracle $A^{\geq k}_W$ if and only if there is a witness-finding algorithm with intersection query oracle $A^{< k}_W$.
+  Furthermore, the seed length, success probability, and query complexity of the algorithms are exactly the same.
+\end{proposition}
+\begin{proof}
+  For any query set $Q$, by definition we have
+  \begin{equation*}
+    \overline{A^{\geq k}_W(Q)} = A^{< k}_W(Q),
+  \end{equation*}
+  so if we define $\overline{\mc{F}}$ by
+  \begin{equation*}
+    \overline{\mc{F}}(s, A_1, \dotsc, A_m) = \mc{F}(s, \overline{A_1}, \dotsc, \overline{A_m}),
+  \end{equation*}
+  for all random seeds $s$ and all possible oracle answers $A_1, \dotsc, A_M$, we get the desired equivalence: $(\mc{Q}, \mc{F})$ is equivalent to $(\mc{Q}, \overline{\mc{F}})$.
+\end{proof}
+
+\begin{corollary}
+  Suppose $W$ is a witness set.
+  There is a witness-finding algorithm with intersection query oracle $A^{= 0}_W$ if and only if there is a witness-finding algorithm with intersection query oracle $A^{\neq 0}_W$.
+  Furthermore, the seed length, success probability, and query complexity of the algorithms are exactly the same.
+\end{corollary}
+\begin{proof}
+  Choose $k = 1$ in the previous proposition.
+\end{proof}
+
 The problem of finding a hitting algorithm reduces to the problem of finding an isolation query algorithm.
 
 \begin{lemma}\label{lem:reduction}
@@ -185,7 +195,7 @@ In order to output a single witness knowing only that a witness is contained in 
 \end{conjecture}
 
 Now, consider the possibility that a witness-finding algorithm with intersection query oracle $A^{= k}_W$ implies an algorithm with oracle $A^{= k - 1}_W$.
-Intuitively, in order for this to work, the latter algorithm would have to simulate the queries $Q_i$ from the former algorithm with some sort of collection of queries of the form $Q_i \setminus \{q_{i, j}$, where $q_{i, j}$ is the $j$th member of $Q_i$.
+Intuitively, in order for this to work, the latter algorithm would have to simulate the queries $Q_i$ from the former algorithm with some sort of collection of queries of the form $Q_i \setminus \{q_{i, j}\}$, where $q_{i, j}$ is the $j$th member of $Q_i$.
 However, the oracle answers would be inconsistent, because we don't know beforehand whether $q_{i, j}$ is in the witness set or not (causing a discrepancy between the answers of the two oracles).
 A similar problem arises when attempting the converse simulation: the simulated queries would be something of the form $Q_i \cup \{v_j\}$, where $v_j$ is the $j$th element of $\Sigma^n \setminus Q_i$, thus there would be a discrepancy between the answers of the two oracles.
 We therefore conjecture that there is evidence that such a simulation is unlikely.
