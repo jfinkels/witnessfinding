@@ -101,8 +101,9 @@ If not otherwise specified, $\mc{W}$ is the power set of $\Sigma^n$, excluding t
 
 Suppose a language $L$ is a witnessed language with witness relation $L'$.
 If $L'$ is in $\P$, then the emptiness oracle can be interpreted as a $\coNP$ oracle (which is equivalent to an $\NP$ oracle by complementation) and the isolation oracle can be interpreted as a $\US$ oracle ($\US$ was defined in \autocite{bg82}).
-In other words, $A^{=0}_W$ acts as an oracle for \textsc{Satisfiability} and $A^{=1}_W$ for \textsc{Unique Satisfiability}.
+In other words, $A^{=0}_W$ is similar to an oracle for \textsc{Satisfiability} and $A^{=1}_W$ to an oracle for \textsc{Unique Satisfiability}.
 (For context, $\coNP \subseteq \US \subseteq \BH_2 \subseteq \P^\NP$.)
+More generally, $A^{= k}_W$ is similar to an oracle for $\CeP$ and $A^{\geq k}$ to an oracle for $\PP$.
 
 However, unlike a true $\NP$ oracle, the oracle $A^f_W$ can only answer questions about a \emph{single} witness set $W$.
 If we consider each witness set to have a corresponding input string $x$, a true $\NP$ oracle would be able to answer questions about any arbitrary input string $x$, and therefore any arbitrary witness set $W$.
