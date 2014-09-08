@@ -374,6 +374,8 @@ Fortunately, the proof uses the Valiant--Vazirani Isolation Lemma (that is, the 
 
 \begin{theorem}[{\autocite[Theorem~2]{krw12}}]\label{thm:nonadaptiveemptiness}
   There is no nonadaptive emptiness query algorithm with success probability $\Omega(1)$ and query complexity $o(n^2)$.
+  %% In other words, any nonadaptive emptiness query algorithm with query complexity $o(n^2)$ must have success probability $o(1)$.
+  %% In other words, any nonadaptive emptiness query algorithm with success probability $\Omega(1)$ must have query complexity $\Omega(n^2)$.
 \end{theorem}
 
 The proof of this theorem relies on the existence of a distribution on witness sets that places all witnesses far apart, so it is hard to guess both the number and location of the witnesses.
