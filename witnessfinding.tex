@@ -7,27 +7,73 @@
 %% https://creativecommons.org/licenses/by-sa/4.0/.
 \documentclass{article}
 
+\usepackage{amsmath}
+\usepackage{amssymb}
 %% This must come before hyperref.
 \usepackage{amsthm}
+%% This is strongly recommended by biblatex.
+\usepackage[english]{babel}
+\usepackage[backend=biber]{biblatex}
+%% This must come before csquotes.
+\usepackage[utf8]{inputenc}
+%% This is strongly recommended by biblatex.
+\usepackage{csquotes}
 %% This must come before hyperref.
 \usepackage{thmtools}
 %% This must come before complexity.
 \usepackage{hyperref}
-%% This is strongly recommended by biblatex.
-\usepackage[english]{babel}
-%% This is strongly recommended by biblatex.
-\usepackage{csquotes}
-\usepackage[backend=biber]{biblatex}
-\usepackage{amsmath}
-\usepackage{amssymb}
 \usepackage{complexity}
+\usepackage[firstpage]{draftwatermark}
+\usepackage{microtype}
+\usepackage{textcomp}
 %% This is required by draftwatermark.
 \usepackage{type1cm}
-\usepackage[firstpage]{draftwatermark}
 
+%% Set the amount by which certain characters protrude into the margins.
+%%
+%% \LoadMicrotypeFile{cmr}
+%%
+%%     This command forces the built-in protrusion settings for the Computer
+%%     Modern font family to become available at this point, so that we can
+%%     override these settings on the next line.
+%%
+%% \SetProtrusion
+%%
+%%     This instructs the microtype package that we are going to modify the
+%%     protrusion settings.
+%%
+%% [load=cmr-OT1]
+%%
+%%     Loads the OpenType encoding of the Computer Modern font family, thereby
+%%     setting the default protrusion values for all the characters. This is
+%%     only possible after the \LoadMicrotypeFile{cmr} command.
+%%
+%% {encoding=OT1, family=cmr}
+%%
+%%     Indicates that we are going to modify the protrusion values for the OT1
+%%     encoding of the Computer Modern (cmr) font family.
+%%
+%% \textquotedblright = {,1000} (and similar commands)
+%%
+%%     Force the character given by \textquotedblright to have default
+%%     protrusion on the left margin (given by an empty string before the
+%%     comma) and full protrusion (that is, protrusion value 1000) on the right
+%%     margin.
+\LoadMicrotypeFile{cmr}
+\SetProtrusion
+    [load=cmr-OT1]
+    {encoding=OT1, family=cmr}
+    {
+      \textquotedblright = {,1000},
+      {]} = {,1000},
+      {,} = {,1000},
+      . = {,1000}
+    }
+
+%% Set the ``work-in-progress'' watermark for the first page.
 \SetWatermarkLightness{0.9}
 \SetWatermarkText{Work-in-progress}
-\SetWatermarkFontSize{4cm}
+\SetWatermarkFontSize{3.5cm}
 
 \hypersetup{pdftitle={Lower bounds for witness-finding algorithms}, pdfauthor={Jeffrey Finkelstein}}
 
@@ -40,8 +86,14 @@
 \declaretheorem[numberlike=theorem]{conjecture}
 \declaretheorem[numberlike=theorem, style=definition]{definition}
 
+%% Custom commands are declared here.
+\newcommand{\email}[1]{\textlangle\href{mailto:#1}{\nolinkurl{#1}}\textrangle}
 \newcommand{\todo}[1]{\textbf{TODO #1}}
 \newcommand{\mc}{\mathcal}
+
+%% Redefine the footnote environment so it has no reference and no number.
+\long\def\symbolfootnote#1{\begingroup%
+\def\thefootnote{\fnsymbol{footnote}}\footnotetext{#1}\endgroup}
 
 \title{Lower bounds for witness-finding algorithms}
 \author{Jeffrey Finkelstein}
@@ -49,6 +101,14 @@
 \begin{document}
 
 \maketitle
+
+\symbolfootnote{%
+  Copyright 2014 Jeffrey~Finkelstein \email{jeffreyf@bu.edu}.
+
+  This document is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License, which is available at \mbox{\url{https://creativecommons.org/licenses/by-sa/4.0/}}.
+  The \LaTeX{} markup that generated this document can be downloaded from its website at \mbox{\url{https://github.com/jfinkels/witnessfinding}}.
+  The markup is distributed under the same license.
+}
 
 %%\section{Introduction}
 %%
