@@ -383,6 +383,10 @@ Fortunately, the proof uses the Valiant--Vazirani Isolation Lemma (that is, the 
 The proof of this theorem relies on the existence of a distribution on witness sets that places all witnesses far apart, so it is hard to guess both the number and location of the witnesses.
 This distribution comes from \autocite[Theorem~4.2]{dkvmw13}.
 
+\begin{corollary}[{\autocite[Remark~2]{krw12}}]
+  For any polynomial $p$, there is no $A^{\geq p(n)}_W$ witness-finding algorithm with success probability $\Omega(1)$ and query complexity $o(n^2)$.
+\end{corollary}
+
 \begin{theorem}[{\autocite[Theorems~3.3 and 3.4]{newport14}}]
   There is no hitting algorithm with success probability $\Omega(1 - 2^{-n})$ and query complexity $o(n^2)$.
   Furthermore, these bounds hold even when restricted to witness sets of cardinality two.
@@ -400,9 +404,11 @@ The proof of this theorem relies on the probabilistic method to show the existen
   This would contradict the previous theorem, hence no such algorithm exists.
 \end{proof}
 
-This corollary is similar to \autoref{thm:nonadaptiveemptiness}, but provides an even stronger lower bound.
-Not only does it exclude the possibility of both adaptive and nonadaptive algorithms, it also allows them to have even better success probabilities.
-Furthermore, the isolation query oracle (which is like a $\US$ oracle) is a more powerful than the emptiness query oracle (which is like an $\NP$ oracle).
+This corollary is similar to \autoref{thm:nonadaptiveemptiness}, but is stronger in some ways and weaker in others.
+It is stronger in two ways.
+First, not only nonadaptive algorithms but also adaptive algorithms have this lower bound.
+Second, its isolation query oracle is like a $\US$ oracle, more powerful than the emptiness query oracle, which is like an $\NP$ oracle.
+However, it is weaker in that it requires the success probability to be $\Omega(1 - 2^{-n})$, asymptotically much greater than $\Omega(1)$.
 
 Other types of queries produce the same lower bounds.
 Queries of the form ``does $|Q \cap W| = |Q|$?'', or equivalently, ``is $Q \subseteq W$?'', yield the same lower bounds as in \autoref{thm:nonadaptiveemptiness}.
