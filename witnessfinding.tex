@@ -14,8 +14,10 @@
 %% This is strongly recommended by biblatex.
 \usepackage[english]{babel}
 \usepackage[backend=biber]{biblatex}
+\usepackage[T1]{fontenc}
 %% This must come before csquotes.
 \usepackage[utf8]{inputenc}
+\usepackage{lmodern}
 %% This is strongly recommended by biblatex.
 \usepackage{csquotes}
 %% This must come before hyperref.
@@ -208,7 +210,7 @@ A witness-finding algorithm must output an element of $W$, whereas a hitting alg
 The equivalence of the $\NP$ and $\coNP$ oracles suggested in the previous section is given by a corollary to the following proposition.
 
 \begin{proposition}
-  Suppose $W$ is a witness set and $k$ is a natural number.
+  Suppose $W$ is a witness set and $k$ is positive integer.
   There is a witness-finding algorithm with intersection query oracle $A^{\geq k}_W$ if and only if there is a witness-finding algorithm with intersection query oracle $A^{< k}_W$.
   Furthermore, the seed length, success probability, and query complexity of the algorithms are exactly the same.
 \end{proposition}
