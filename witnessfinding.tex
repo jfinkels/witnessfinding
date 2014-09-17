@@ -280,11 +280,13 @@ We therefore conjecture that there is evidence that such a simulation is unlikel
 
 In \autocite[Section~7]{green93}, Fred asks, ``Does the hypothesis $\P^{\CeP} = \P^\PP$ have any dramatic consequences?''
 Our intuition is that $\P^{\CeP}$ is less powerful than $\P^\PP$, because the latter can determine the exact number of accepting paths in a computation (or in other words, the number of witnesses in a witness set) by a binary search, whereas the former does not seem to admit this possibility.
-On the contrary, we know that $\NP^\PP = \NP^{\CeP}$.
+On the contrary, we know that $\NP^{\CeP} = \NP^\PP$.
 Perhaps a first step toward comparing $\P^\PP$ and $\P^{\CeP}$ is comparing $\RP^\PP$ and $\RP^{\CeP}$.
 
 There is a superficial similarity to the question ``is $\RP^\PP$ a subset of $\RP^{\CeP}$?'' and the question ``does a witness-finding algorithm with oracle $A^{\geq k}_W$ imply a witness-finding algorithm with oracle $A^{= k}_W$?''
-However, we run into a few problems when trying to prove that one implies the other.
+However, we run into a few problems when trying to follow this approach.
+First, according to \autocite[Remark~2]{krw12}, the lower bounds on emptiness query algorithms (with oracle $A^{=0}_W$) ``essentially hold'' when the oracle is $A^{\geq k}_W$ instead, for any $k$ bounded by a polynomial in $n$.
+Furthermore, if we attempt such a proof, we run into several problems.
 
 \begin{conjecture}
   If $\RP^\PP \subseteq \RP^{\CeP}$, then a witness-finding algorithm with oracle $A^{\geq k}_W$ implies a witness-finding algorithm with oracle $A^{= k}_W$.
