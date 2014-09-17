@@ -375,28 +375,27 @@ Fortunately, the proof uses the Valiant--Vazirani Isolation Lemma (that is, the 
 \section{Lower bounds}
 
 \begin{theorem}[{\autocite[Theorem~2]{krw12}}]\label{thm:nonadaptiveemptiness}
-  There is no nonadaptive emptiness query algorithm with success probability $\Omega(1)$ and query complexity $o(n^2)$.
-  %% In other words, any nonadaptive emptiness query algorithm with query complexity $o(n^2)$ must have success probability $o(1)$.
-  %% In other words, any nonadaptive emptiness query algorithm with success probability $\Omega(1)$ must have query complexity $\Omega(n^2)$.
+  For any nonadaptive emptiness query algorithm, if the algorithm has success probability $\Omega(1)$, then it has query complexity $\Omega(n^2)$.
 \end{theorem}
 
 The proof of this theorem relies on the existence of a distribution on witness sets that places all witnesses far apart, so it is hard to guess both the number and location of the witnesses.
 This distribution comes from \autocite[Theorem~4.2]{dkvmw13}.
 
 \begin{corollary}[{\autocite[Remark~2]{krw12}}]
-  For any polynomial $p$, there is no $A^{\geq p(n)}_W$ witness-finding algorithm with success probability $\Omega(1)$ and query complexity $o(n^2)$.
+  Let $p$ be a polynomial.
+  For any nonadaptive $A^{\geq p(n)}_W$ witness-finding algorithm, if the algorithm has success probability $\Omega(1)$, then it has query complexity $\Omega(n^2)$.
 \end{corollary}
 
 \begin{theorem}[{\autocite[Theorems~3.3 and 3.4]{newport14}}]
-  There is no hitting algorithm with success probability $\Omega(1 - 2^{-n})$ and query complexity $o(n^2)$.
-  Furthermore, these bounds hold even when restricted to witness sets of cardinality two.
+  For any hitting algorithm, if the algorithm has success probability $\Omega(1 - 2^{-n})$, then it has query complexity $\Omega(n^2)$.
+  Furthermore, this is true even when restricted to witness sets of cardinality two.
 \end{theorem}
 
 The proof of this theorem relies on the probabilistic method to show the existence of a witness set that is hard to ``hit'', found in \autocite{ablp91}.
 
 \begin{corollary}\label{cor:isolationalg}
-  There is no (nonadaptive or adaptive) isolation query algorithm with success probability $\Omega(1 - 2^{-n})$ and query complexity $o(n^2)$.
-  Furthermore, these bounds hold even when restricted to witness sets of cardinality two.
+  For any adaptive isolation query algorithm, if the algorithm has success probability $\Omega(1 - 2^{-n})$, then it has query complexity $\Omega(n^2)$.
+  Furthermore, this is true even when restricted to witness sets of cardinality two.
 \end{corollary}
 \begin{proof}
   This is a proof by contradiction.
