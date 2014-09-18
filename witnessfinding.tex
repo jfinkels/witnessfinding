@@ -323,6 +323,17 @@ Furthermore, if we attempt such a proof, we run into several problems.
   \end{itemize}
 \end{proof}
 
+Although this starts to have little to do with the witness-finding algorithm results given in the following sections, another approach to showing that $\P^{\CeP} \neq \P^\PP$ may be to show that adaptive queries to $\CeP$ are no more powerful than nonadaptive queries, whereas adaptive queries to $\PP$ are more powerful than adaptive queries.
+What is known about $\PP$?
+\begin{itemize}
+\item $\PP$ is closed under complement, union, and intersection.
+\item $\PP = \P^{\PP[O(1)]}_\parallel$ (that is, $\PP$ is closed under polynomial time $k$-round truth-table reductions, for any $k \in O(1)$).
+\end{itemize}
+What is known about $\CeP$?
+\begin{itemize}
+\item $\P^{\CeP[O(1)]}_\parallel = \P^{\CeP[O(\log n)]}$ (see \autocite[Theorem~5]{green93} and \autocite[Corollary~4.6]{ogiwara94}).
+\end{itemize}
+
 \section{Upper bounds}
 
 \begin{theorem}\label{thm:naive}
