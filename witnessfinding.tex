@@ -92,6 +92,8 @@
 \newcommand{\email}[1]{\textlangle\href{mailto:#1}{\nolinkurl{#1}}\textrangle}
 \newcommand{\todo}[1]{\textbf{TODO #1}}
 \newcommand{\mc}{\mathcal}
+\newcommand{\floor}[1]{\left\lfloor{#1}\right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil{#1}\right\rceil}
 
 %% Redefine the footnote environment so it has no reference and no number.
 \long\def\symbolfootnote#1{\begingroup%
@@ -130,6 +132,7 @@
 Let $\Sigma = \{0, 1\}$.
 For each $b \in \{0, 1\}$, let $\bar{b} = 1 - b$.
 Let $[n] = \{1, \dotsc, n\}$.
+Denote by $\log n$ the base-$2$ logarithm.
 
 A language $L \subseteq \Sigma^*$ is a \emph{witnessed language} if there exists a language $L' \subseteq \Sigma^* \times \Sigma^*$, called the \emph{witness relation}, such that for each $x$ of length $n$, we have $x \in L$ if and only if there is a $w \in \Sigma^n$ such that $(x, w) \in L'$.
 (We don't consider strings $w$ of length polynomial in $n$ because a language in any ``well-behaved'' complexity class can be converted to an equivalent language in which all witnesses have length exactly $n$ by padding the string $x$ by an appropriate amount.)
@@ -209,15 +212,22 @@ A witness-finding algorithm must output an element of $W$, whereas a hitting alg
 
 The equivalence of the $\NP$ and $\coNP$ oracles suggested in the previous section is given by a corollary to the following proposition.
 
-\begin{proposition}
+\begin{proposition}\label{prop:flip}
   Suppose $W$ is a witness set and $k$ is positive integer.
-  There is a witness-finding algorithm with intersection query oracle $A^{\geq k}_W$ if and only if there is a witness-finding algorithm with intersection query oracle $A^{< k}_W$.
-  Furthermore, the seed length, success probability, and query complexity of the algorithms are exactly the same.
+  \begin{itemize}
+  \item There is a witness-finding algorithm with intersection query oracle $A^{\geq k}_W$ if and only if there is a witness-finding algorithm with intersection query oracle $A^{< k}_W$.
+  \item There is a witness-finding algorithm with intersection query oracle $A^{= k}_W$ if and only if there is a witness-finding algorithm with intersection query oracle $A^{\neq k}_W$.
+  \end{itemize}
+  Furthermore, in both cases, the seed length, success probability, and query complexity of the algorithms are exactly the same.
 \end{proposition}
 \begin{proof}
   For any query set $Q$, by definition we have
   \begin{equation*}
-    \overline{A^{\geq k}_W(Q)} = A^{< k}_W(Q),
+    \overline{A^{\geq k}_W(Q)} = A^{< k}_W(Q)
+  \end{equation*}
+  and
+  \begin{equation*}
+    \overline{A^{= k}_W(Q)} = A^{\neq k}_W(Q),
   \end{equation*}
   so if we define $\overline{\mc{F}}$ by
   \begin{equation*}
@@ -231,9 +241,6 @@ The equivalence of the $\NP$ and $\coNP$ oracles suggested in the previous secti
   There is a witness-finding algorithm with intersection query oracle $A^{= 0}_W$ if and only if there is a witness-finding algorithm with intersection query oracle $A^{\neq 0}_W$.
   Furthermore, the seed length, success probability, and query complexity of the algorithms are exactly the same.
 \end{corollary}
-\begin{proof}
-  Choose $k = 1$ in the previous proposition.
-\end{proof}
 
 The problem of finding a hitting algorithm reduces to the problem of finding an isolation query algorithm.
 
