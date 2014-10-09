@@ -28,48 +28,19 @@
 \usepackage[firstpage]{draftwatermark}
 \usepackage{microtype}
 \usepackage{textcomp}
-%% This is required by draftwatermark.
-\usepackage{type1cm}
 
-%% Set the amount by which certain characters protrude into the margins.
-%%
-%% \LoadMicrotypeFile{cmr}
-%%
-%%     This command forces the built-in protrusion settings for the Computer
-%%     Modern font family to become available at this point, so that we can
-%%     override these settings on the next line.
-%%
-%% \SetProtrusion
-%%
-%%     This instructs the microtype package that we are going to modify the
-%%     protrusion settings.
-%%
-%% [load=cmr-OT1]
-%%
-%%     Loads the OpenType encoding of the Computer Modern font family, thereby
-%%     setting the default protrusion values for all the characters. This is
-%%     only possible after the \LoadMicrotypeFile{cmr} command.
-%%
-%% {encoding=OT1, family=cmr}
-%%
-%%     Indicates that we are going to modify the protrusion values for the OT1
-%%     encoding of the Computer Modern (cmr) font family.
-%%
-%% \textquotedblright = {,1000} (and similar commands)
-%%
-%%     Force the character given by \textquotedblright to have default
-%%     protrusion on the left margin (given by an empty string before the
-%%     comma) and full protrusion (that is, protrusion value 1000) on the right
-%%     margin.
 \LoadMicrotypeFile{cmr}
 \SetProtrusion
-    [load=cmr-OT1]
-    {encoding=OT1, family=cmr}
+    [load=lmr-T1]
+    {encoding=T1, family=lmr}
     {
       \textquotedblright = {,1000},
+      \textquotedblleft = {1000,},
+      {[} = {1000,},
       {]} = {,1000},
       {,} = {,1000},
-      . = {,1000}
+      {;} = {,1000},
+      {.} = {,1000}
     }
 
 %% Set the ``work-in-progress'' watermark for the first page.
