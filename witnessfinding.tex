@@ -439,7 +439,8 @@ The proof of this theorem relies on the probabilistic method to show the existen
 \end{corollary}
 \begin{proof}
   This is a proof by contradiction.
-  If there were such an algorithm, then \autoref{lem:reduction} would imply a hitting algorithm with the same success probability.
+  Assume there is an adaptive isolation algorithm with success probability $\Omega(1 - 2^{-n})$ and query complexity $o(n^2)$.
+  By \autoref{lem:reduction}, there is a hitting algorithm with the same success probability and query complexity (up to constant factors).
   This would contradict the previous theorem, hence no such algorithm exists.
 \end{proof}
 
