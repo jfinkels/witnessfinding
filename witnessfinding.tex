@@ -437,6 +437,106 @@ Such queries are \emph{monotone queries} (that is, if $W \subseteq W'$, then $Q 
 
 \todo{I can't understand what the random variable is for which there is an expectation here.}
 
+\section{Entropy on bad witness distributions}
+
+In this section $H(X)$ denotes the Shannon entropy of random variable $X$ chosen from a distribution on binary strings, and $H_b(p)$ denotes the binary entropy function on a Bernoulli process with success probability $p$.
+
+Define $\mc{W}_n^*$, a distribution on witness sets (that is, subsets of $\Sigma^n$), by the following sampling procedure.
+\begin{itemize}
+\item Let $W = \emptyset$.
+\item Choose $D$ uniformly at random from $[n]$.
+\item For each $w \in \Sigma^n$, add $w$ to $W$ with probability $2^{-D}$.
+\item Output $W$.
+\end{itemize}
+(Technically, $W$ may be the empty set, but this occurs with probability $o(1)$, so for our purposes, we ignore it.
+\todo{a brief explanation can be found in \autocite{krw14}, I believe.})
+
+\begin{lemma}[{\autocite[Claim~1]{krw12}}]
+  Let $n$ be positive integer.
+  Let $k$ be a natural number and let $A^{= k}_W$ be an intersection query oracle.
+  Let $(\mc{Q}, \mc{F})$ be a nonadaptive witness-finding algorithm with query complexity $m$, seed length $r$, and success probability $p$.
+  Let $s$ be a fixed random seed of length $r$.
+
+  Suppose $(Q_1, \dotsc, Q_m)$ is the sequence of queries produced by $\mc{Q}(s)$.
+  For the sake of brevity, let $A_i = A^{=k}_W(Q_i)$, let $f(A_1, \dotsc, A_m) = \mc{F}(s, A_1, \dotsc, A_m)$, and let $f(\vec{A}) = f(A_1, \dotsc, A_m)$.
+
+  Suppose $W$ is a witness set chosen according to the probability distribution $\mc{W}_n^*$.
+  Then
+  \begin{equation*}
+    H(f(\vec{A})) \leq \log n + O\left(\frac{m}{n}\right).
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+  %% We apply \autoref{prop:flip} in order to show the result with respect to the complementary intersection query oracle, that is, $A^{\neq k}_W$ instead of $A^{= k}_W$.
+  First, we provide an upper bound for $H(f(\vec{A}))$, in order to simplify our task.
+  \begin{align}
+    H(f(\vec{A})) & = H(f(A_1, \dotsc, A_m)) \\
+    & \leq H(A_1, \dotsc, A_m) \\
+    & \leq H(A_1, \dotsc, A_m, D) \\
+    & = H(D) + H(A_1, \dotsc, A_m | D) \\
+    & \leq \log n + H(A_1, \dotsc, A_m | D) \\
+    & \leq \log n + \sum_{i = 1}^m H(A_i | D) \\
+    & = \log n + \sum_{i = 1}^m \sum_{d = 1}^n \Pr[D = d] H(A_i | D = d) \\
+    & = \log n + \frac{1}{n} \sum_{i = 1}^m \sum_{d = 1}^n H(A_i | D = d)
+  \end{align}
+  The inequalities are explained as follows.
+  \begin{enumerate}
+  \item Definition in hypothesis.
+  \item When $s$ is fixed, $f$ is a deterministic function, and deterministic functions can only reduce entropy.
+  \item Adding a random variable can only increase entropy.
+  \item Identity for conditional entropy.
+  \item Random variable $D$ is chosen uniformly at random from $[n]$, so it has $\log n$ entropy.
+  \item \todo{why?}
+  \item Definition of conditional entropy.
+  \item Again, $D$ is chosen uniformly at random from $[n]$, so the probability that $D = d$ is $\frac{1}{n}$ for each $d \in [n]$.
+  \end{enumerate}
+  Now it suffices to show that $\sum_{d = 1}^n H(A_i | D = d) \in O(1)$.
+
+  Let $i$ be an arbitrary index in $[m]$.
+  For each $d \in [n]$, let $p_d = \Pr[A_i = 1 | D = d]$ (so $1 - p_d = \Pr[A_i = 0 | D = d]$).
+  By definition of conditional Shannon entropy and binary entropy,
+  \begin{align*}
+    H(A_i | D = d) & = \mathbb{E}[-\log \Pr[A_i = 1 | D = d] | D = d] \\
+    & = -p_d \log p_d - (1 - p_d) \log (1 - p_d) \\
+    & = H_b(p_d).
+  \end{align*}
+  Thus it suffices to show
+  \begin{equation}\label{eq:hb}
+    \sum_{d = 1}^n H_b(p_d)
+  \end{equation}
+  is in $O(1)$.
+
+  We show that the sum \eqref{eq:hb} is in $O(1)$ by decomposing it into three subsums and showing that each subsum is in $O(1)$.
+  To choose the decomposition, we find the value of $d$ that causes the binary entropy function $H_b(p_d)$ to achieve a maximum, then show that the entropy decreases rapidly as $d$ deviates from this value.
+  Intuitively, the entropy function $H_b(p_d)$ achieves a maximum around the value $d = \log |Q_i|$, because conditioned on the event $D = d$, the expected size of $W$ when chosen from $\mc{W}^*$ is $\frac{2^n}{|Q_i|}$.
+  \todo{This means that...?}
+  So in order to show the sum \eqref{eq:hb} is in $O(1)$, we decompose it as
+  \begin{equation*}
+    \sum_{d = 1}^{\lambda - 1} H_b(p_d) +
+    \sum_{d = \lambda - 1}^{\lambda + 1} H_b(p_d) +
+    \sum_{d = \lambda + 1}^{n} H_b(p_d),
+  \end{equation*}
+  where $\lambda = \log |Q_i|$, and show that each subsum is in $O(1)$.
+  (Technicality: the bounds with $\lambda - 1$ and $\lambda + 1$ should use the floor and ceiling functions; even if we are sloppy with those, we will only be off by $O(1)$ at most.)
+  \todo{
+    Up until this point, the parameter of the oracle $k$ did not affect the proof at all.
+    However, since $k$ is now a parameter and may not equal $0$, we may need to expand the middle interval and shrink the outer intervals in order for this to work.
+  }
+
+  The middle subsum has at most two summands, since $\floor{\lambda + 1} - \ceil{\lambda - 1} + 1 \leq 2$.
+  The binary entropy function has value at most $1$ unconditionally, so the middle subsum is at most $2$, which is in $O(1)$.
+  Now we need only consider the first and last subsums.
+
+  %% In the first subsum, we have $d \leq \lambda - 1$.
+  We know that $p_d$ is the probability that $A_i = 1$ given that $D = d$, or in other words, the probability that $|Q_i \cap W| = k$.
+  For each element $w \in \Sigma^n$, the probability that $w \in W$ is $2^{-d}$, since $W$ is drawn from the distribution $\mc{W}^*$.
+  Since each element of $\Sigma^n$ is in $W$ independently, the probability that $Q_i$ contains exactly $k$ elements of $W$ follows the binomial distribution for $k$ successes in $|Q_i|$ independent Bernoulli trials with probability $2^{-d}$.
+  \begin{equation}
+    p_d = \binom{|Q_i|}{k} \left(2^{-d}\right)^k \left(1 - 2^{-d}\right)^{|Q_i| - k}
+  \end{equation}
+  \todo{At this point, I can't follow the proof in \autocite{krw12}, because I don't know how to bound these probabilities by an exponentially small number.}
+\end{proof}
+
 \section{Todo}
 
 Does the lower bound of \autoref{cor:isolationalg} hold for any algorithm asking queries to an oracle that answers questions of the form ``does $|Q \cap W| = k$?'' for any fixed positive integer $k$?
