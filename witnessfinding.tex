@@ -242,6 +242,28 @@ The equivalence of the $\NP$ and $\coNP$ oracles suggested in the previous secti
   Furthermore, the seed length, success probability, and query complexity of the algorithms are exactly the same.
 \end{corollary}
 
+\todo{This proposition uses two oracles instead of one...this isn't defined in our model.}
+
+\begin{proposition}
+  If there is a witness-finding algorithm with intersection query oracle $A^{=k}_W$ with query complexity $m$, then there is a witness-finding algorithm with access to two intersection query oracles, $A^{\geq k}_W$ and $A^{\geq k + 1}_W$,  with query complexity $2m$.
+  Furthermore, the seed length and success probability of the algorithms are exactly the same.
+\end{proposition}
+\begin{proof}
+  Suppose $(\mc{Q}, \mc{F})$ is the witness-finding algorithm with intersection query oracle $A^{=k}_W$.
+  By \autoref{prop:flip}, it suffices to show a witness-finding algorithm with access to the two oracles $A^{\geq k}_W$ and $A^{< k + 1}_W$, or equivalently, $A^{\geq k}_W$ and $A^{\leq k}_W$.
+  Define $\mc{Q}'$ by
+  \begin{equation*}
+    \mc{Q}'(s) = (Q_1, Q_2, \dotsc, Q_m, Q_1, \dotsc, Q_m),
+  \end{equation*}
+  where $(Q_1, \dotsc, Q_m)$ is the output of $\mc{Q}(s)$.
+  Let $A^\geq_i$ and $A^\leq_i$ denote $A^{\geq k}_W(Q_i)$ and $A^{\geq k}_W(Q_i)$, respectively, for each $i \in [m]$.
+  Define $\mc{F}'$ by
+  \begin{equation*}
+    \mc{F}'(s, A^\geq_1, \dotsc, A^\geq_m, A^\leq_1, \dotsc, A^\leq_m) = \mc{F}(s, A^\geq_1 \land A^\leq_1, \dotsc, A^\geq_m \land A^\leq_m).
+  \end{equation*}
+  Since $A^\geq_i \land A^\leq_i = A^{= k}_W(Q_i)$, the correctness of $(\mc{Q}', \mc{F}')$ follows from the correctness of $(\mc{Q}, \mc{F})$.
+\end{proof}
+
 The problem of finding a hitting algorithm reduces to the problem of finding an isolation query algorithm.
 
 \begin{lemma}\label{lem:reduction}
