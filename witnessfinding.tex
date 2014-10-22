@@ -183,18 +183,21 @@ A witness-finding algorithm must output an element of $W$, whereas a hitting alg
 \todo{define polynomial-time algorithms (provide polysize circuits that encode the query sets)}
 
 \begin{figure}
-  \caption{\label{fig:queries}When considering nonadaptive queries with $\Omega(1)$ success probability, direct queries require $\Omega(2^n)$ queries, monotone and $\NP$ queries require $\Omega(n^2)$ queries, and all queries require $\Omega(n)$ queries.}
+  \caption{\label{fig:queries}%
+    When considering nonadaptive queries with $\Omega(1)$ success probability, direct queries require $\Omega(2^n)$ queries, monotone and $\NP$ queries require $\Omega(n^2)$ queries, and arbitrary queries require $\Omega(n)$ queries.
+    In this diagram, lower bounds propagate downward and upper bounds propagate upward.%
+  }
   \begin{center}
-    \begin{tikzpicture}[scale=2, ->]
-      \node at (0, 0) (direct) {$x \in W?$};
-      \node at (0, 1) (equal0) {$|S \cap W| = 0?$};
-      \node at (0, 2) (NP) {$\NP?$};
-      \node at (-1, 1.5) (geqk) {$|S \cap W| \geq k?$};
-      \node at (1, 1.5) (eqk) {$|S \cap W| = k?$};
-      \node at (-1, 2.5) (PP) {$\PP?$};
-      \node at (1, 2.5) (CeP) {$\CeP?$};
-      \node at (-2, 2.5) (mono) {$\mathsf{Mono}?$};
-      \node at (0, 3.5) (all) {$\mathsf{All}?$};
+    \begin{tikzpicture}[->, every node/.style={align=center}]
+      \node at (0, 0) (direct) {$x \in W?$ \\ $\Theta(2^n)$};
+      \node at (0, 2) (equal0) {$|S \cap W| = 0?$ \\ $\Theta(n^2)$};
+      \node at (0, 5) (NP) {$\NP?$ \\ $\Theta(n^2)$};
+      \node at (-2, 4) (geqk) {$|S \cap W| \geq k?$ \\ $\Theta(n^2)$};
+      \node at (2, 4) (eqk) {$|S \cap W| = k?$ \\ $\Omega(n), O(n^2)$};
+      \node at (-2, 6) (PP) {$\PP?$ \\ $\Omega(n), O(n^2)$};
+      \node at (2, 6) (CeP) {$\CeP?$ \\ $\Omega(n), O(n^2)$};
+      \node at (-4, 6) (mono) {$\mathsf{Mono}?$ \\ $\Theta(n^2)$};
+      \node at (0, 7) (all) {$\mathsf{All}?$ \\ $\Theta(n)$};
       \draw (direct) to (equal0);
       \draw (equal0) to (NP);
       \draw (equal0) to (geqk);
@@ -207,6 +210,10 @@ A witness-finding algorithm must output an element of $W$, whereas a hitting alg
       \draw (PP) to (all);
       \draw (mono) to (all);
       \draw (CeP) to (all);
+
+      \node at (-6, 0) (weak) {weaker oracles};
+      \node at (-6, 7) (strong) {stronger oracles};
+      \draw (weak) to (strong);
     \end{tikzpicture}
   \end{center}
 \end{figure}
