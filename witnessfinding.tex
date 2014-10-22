@@ -477,90 +477,126 @@ Define $\mc{W}_n^*$, a distribution on witness sets (that is, subsets of $\Sigma
 (Technically, $W$ may be the empty set, but this occurs with probability $o(1)$, so for our purposes, we ignore it.
 \todo{a brief explanation can be found in \autocite{krw14}, I believe.})
 
-\begin{lemma}[{\autocite[Claim~1]{krw12}}]
-  Let $n$ be positive integer.
-  Let $k$ be a natural number and let $A^{= k}_W$ be an intersection query oracle.
-  Let $(\mc{Q}, \mc{F})$ be a nonadaptive witness-finding algorithm with query complexity $m$, seed length $r$, and success probability $p$.
-  Let $s$ be a fixed random seed of length $r$.
-
-  Suppose $(Q_1, \dotsc, Q_m)$ is the sequence of queries produced by $\mc{Q}(s)$.
-  For the sake of brevity, let $A_i = A^{=k}_W(Q_i)$, let $f(A_1, \dotsc, A_m) = \mc{F}(s, A_1, \dotsc, A_m)$, and let $f(\vec{A}) = f(A_1, \dotsc, A_m)$.
-
-  Suppose $W$ is a witness set chosen according to the probability distribution $\mc{W}_n^*$.
-  Then
+\begin{lemma}\label{lem:prob}
+  For any positive integer $n$, for any $k \in [2^n]$, for any $d \in [n]$, and for any $S \subseteq \left(\left\{0, 1\right\}^n \setminus \emptyset\right)$,
   \begin{equation*}
-    H(f(\vec{A})) \leq \log n + O\left(\frac{m}{n}\right).
+    \Pr_{W \gets \mc{W}_n^*}\left[ |S \cap W| = k \middle| D = d\right] < \frac{e^{\frac{1}{12s}}}{\sqrt{2 \pi}} \left(\frac{s}{k (s - k)}\right)^{\frac{1}{2}},
+  \end{equation*}
+  where $s$ denotes the cardinality of $S$.
+\end{lemma}
+\begin{proof}
+  For the sake of brevity, let $s$ denote $|S|$, and let $p$ denote the probability $\Pr_{W \gets \mc{W}_n^*}[ |S \cap W| = k | D = d]$.
+  Without loss of generality, assume $s \geq k$, since if $s$ is smaller than $k$, the probability $p$ is zero.
+  Since each element in $W$ is chosen independently with probability $2^{-d}$, the probability that $|S \cap W| = k$ is the probability that exactly $k$ of the elements of $S$ are in $W$ and exactly $s - k$ of the elements are not in $W$.
+  This probability fits the binomial distribution with $s$ trials, $k$ successes, and probability of success $2^{-d}$.
+  Thus
+  \begin{equation*}
+    p = \binom{s}{k} (2^{-d})^k (1 - 2^{-d})^{s - k}.
+  \end{equation*}
+  By finding the zeros of the first derivative of $p$ with respect to $d$, we see that $p$ achieves a maximum value at $d = -\log \frac{k}{s}$.
+  \todo{Cite a text giving the first derivative of the binomial distribution.}
+  When $d$ takes this value,
+  \begin{equation*}
+    p = \binom{s}{k} \frac{k^k}{s^s} (s - k)^{s - k}.  % so fun!
+  \end{equation*}
+  Expanding the binomial coefficient as $\frac{s!}{k!(s - k)!}$ and applying Stirling's approximation,
+  \begin{equation*}
+    \sqrt{2 \pi m} \left(\frac{m}{e}\right)^m < m! < e^{\frac{1}{12m}} \sqrt{2 \pi m} \left(\frac{m}{e}\right)^m,
+  \end{equation*}
+  yields the upper bound
+  \begin{equation*}
+    %p & < \frac{\sqrt{2 \pi s} \left(\frac{s}{e}\right)^s e^{\frac{1}{12s}} k^k (s - k)^{s - k}}{\sqrt{2 \pi (s - k)} \left(\frac{s - k}{e}\right)^{s - k} e^{\frac{1}{12 (s - k) + 1}} \sqrt{2 \pi k} \left(\frac{k}{e}\right)^k e^{\frac{1}{12 k + 1}}} \\
+    %p & < \frac{\sqrt{2 \pi s} \left(\frac{s}{e}\right)^s e^{\frac{1}{12s}} k^k (s - k)^{s - k}}{\sqrt{2 \pi (s - k)} \left(\frac{s - k}{e}\right)^{s - k} \sqrt{2 \pi k} \left(\frac{k}{e}\right)^k} \\
+    p < \frac{e^{\frac{1}{12s}}}{\sqrt{2 \pi}} \left(\frac{s}{k (s - k)}\right)^{\frac{1}{2}}. \qedhere
+  \end{equation*}
+  %\todo{See \url{http://faculty.cs.tamu.edu/klappi/random-s06/useful_bounds.pdf} for better bounds, perhaps.}
+\end{proof}
+
+Under what relationship between $k$ and $|S|$ does the probability become at most one half?
+
+\begin{lemma}\label{lem:quad}
+  Let $n$, $k$, $d$, $S$, and $s$ be as in the hypothesis of \autoref{lem:prob}.
+  If $s \geq 4$ and $k$ satisfies either of the inequalities
+  \begin{equation*}
+    k \leq \frac{1}{2}\left(s - \frac{1}{\alpha} \sqrt{s (s - 4)}\right)
+  \end{equation*}
+  or
+  \begin{equation*}
+    k \geq \frac{1}{2}\left(s + \frac{1}{\alpha} \sqrt{s (s - 4)}\right),
+  \end{equation*}
+  where $\alpha = \frac{20}{103}$, then
+  \begin{equation*}
+    \frac{e^{\frac{1}{12s}}}{\sqrt{2 \pi}} \left(\frac{s}{k (s - k)}\right)^{\frac{1}{2}} \leq \frac{1}{2}.
   \end{equation*}
 \end{lemma}
 \begin{proof}
-  %% We apply \autoref{prop:flip} in order to show the result with respect to the complementary intersection query oracle, that is, $A^{\neq k}_W$ instead of $A^{= k}_W$.
-  First, we provide an upper bound for $H(f(\vec{A}))$, in order to simplify our task.
-  \begin{align}
-    H(f(\vec{A})) & = H(f(A_1, \dotsc, A_m)) \\
-    & \leq H(A_1, \dotsc, A_m) \\
-    & \leq H(A_1, \dotsc, A_m, D) \\
-    & = H(D) + H(A_1, \dotsc, A_m | D) \\
-    & \leq \log n + H(A_1, \dotsc, A_m | D) \\
-    & \leq \log n + \sum_{i = 1}^m H(A_i | D) \\
-    & = \log n + \sum_{i = 1}^m \sum_{d = 1}^n \Pr[D = d] H(A_i | D = d) \\
-    & = \log n + \frac{1}{n} \sum_{i = 1}^m \sum_{d = 1}^n H(A_i | D = d)
-  \end{align}
-  The inequalities are explained as follows.
-  \begin{enumerate}
-  \item Definition in hypothesis.
-  \item When $s$ is fixed, $f$ is a deterministic function, and deterministic functions can only reduce entropy.
-  \item Adding a random variable can only increase entropy.
-  \item Identity for conditional entropy.
-  \item Random variable $D$ is chosen uniformly at random from $[n]$, so it has $\log n$ entropy.
-  \item \todo{why?}
-  \item Definition of conditional entropy.
-  \item Again, $D$ is chosen uniformly at random from $[n]$, so the probability that $D = d$ is $\frac{1}{n}$ for each $d \in [n]$.
-  \end{enumerate}
-  Now it suffices to show that $\sum_{d = 1}^n H(A_i | D = d) \in O(1)$.
-
-  Let $i$ be an arbitrary index in $[m]$.
-  For each $d \in [n]$, let $p_d = \Pr[A_i = 1 | D = d]$ (so $1 - p_d = \Pr[A_i = 0 | D = d]$).
-  By definition of conditional Shannon entropy and binary entropy,
-  \begin{align*}
-    H(A_i | D = d) & = \mathbb{E}[-\log \Pr[A_i = 1 | D = d] | D = d] \\
-    & = -p_d \log p_d - (1 - p_d) \log (1 - p_d) \\
-    & = H_b(p_d).
-  \end{align*}
-  Thus it suffices to show
-  \begin{equation}\label{eq:hb}
-    \sum_{d = 1}^n H_b(p_d)
-  \end{equation}
-  is in $O(1)$.
-
-  We show that the sum \eqref{eq:hb} is in $O(1)$ by decomposing it into three subsums and showing that each subsum is in $O(1)$.
-  To choose the decomposition, we find the value of $d$ that causes the binary entropy function $H_b(p_d)$ to achieve a maximum, then show that the entropy decreases rapidly as $d$ deviates from this value.
-  Intuitively, the entropy function $H_b(p_d)$ achieves a maximum around the value $d = \log |Q_i|$, because conditioned on the event $D = d$, the expected size of $W$ when chosen from $\mc{W}^*$ is $\frac{2^n}{|Q_i|}$.
-  \todo{This means that...?}
-  So in order to show the sum \eqref{eq:hb} is in $O(1)$, we decompose it as
+  Since $s \geq 4$, we have $\frac{1}{12 s} \leq \frac{1}{48}$, so $e^\frac{1}{12 s} \leq e^{\frac{1}{48}} \leq 1.03$.
+  Also, the value of $\frac{1}{\sqrt{2 \pi}}$ is less than $0.4$.
+  Thus it suffices to show that
   \begin{equation*}
-    \sum_{d = 1}^{\lambda - 1} H_b(p_d) +
-    \sum_{d = \lambda - 1}^{\lambda + 1} H_b(p_d) +
-    \sum_{d = \lambda + 1}^{n} H_b(p_d),
+    \frac{1.03}{0.4} \left(\frac{s}{k (s - k)}\right)^{\frac{1}{2}} \leq \frac{1}{2},
   \end{equation*}
-  where $\lambda = \log |Q_i|$, and show that each subsum is in $O(1)$.
-  (Technicality: the bounds with $\lambda - 1$ and $\lambda + 1$ should use the floor and ceiling functions; even if we are sloppy with those, we will only be off by $O(1)$ at most.)
-  \todo{
-    Up until this point, the parameter of the oracle $k$ did not affect the proof at all.
-    However, since $k$ is now a parameter and may not equal $0$, we may need to expand the middle interval and shrink the outer intervals in order for this to work.
-  }
+  or equivalently,
+  \begin{equation*}
+    \frac{s}{k (s - k)} \leq \left(\frac{20}{103}\right)^2 = \alpha^2.
+  \end{equation*}
 
-  The middle subsum has at most two summands, since $\floor{\lambda + 1} - \ceil{\lambda - 1} + 1 \leq 2$.
-  The binary entropy function has value at most $1$ unconditionally, so the middle subsum is at most $2$, which is in $O(1)$.
-  Now we need only consider the first and last subsums.
+  We can rearrange this inequality so that it looks like the more familiar quadratic inequality in the variable $k$,
+  \begin{equation*}
+    -\alpha^2 k^2 + \alpha^2 k s - s \geq 0.
+  \end{equation*}
+  The discriminant of this quadratic polynomial is $\alpha^2 s^2 - 4(-\alpha^2)(-s)$, which equals $\alpha^2 s (s - 4)$.
+  Since $s \geq 4$ by hypothesis, the polynomial has real roots.
+  Since this polynomial is convex, the inequality is satisfied when $k$ lies outside the open interval whose endpoints are the two (possibly equal) roots.
+  The quadratic formula proves that the roots of the polynomial are
+  \begin{equation*}
+    \frac{s}{2} \pm \frac{1}{2 \alpha^2} \sqrt{\alpha^2 s (s - 4)}.
+  \end{equation*}
+  We conclude that the upper bound in the conclusion of the lemma is satisfied if $k$ is outside the interval
+  \begin{equation*}
+    \left(\frac{1}{2}\left(s - \frac{1}{\alpha} \sqrt{s (s - 4)}\right), \frac{1}{2}\left(s + \frac{1}{\alpha} \sqrt{s (s - 4)}\right)\right). \qedhere
+  \end{equation*}
+\end{proof}
 
-  %% In the first subsum, we have $d \leq \lambda - 1$.
-  We know that $p_d$ is the probability that $A_i = 1$ given that $D = d$, or in other words, the probability that $|Q_i \cap W| = k$.
-  For each element $w \in \Sigma^n$, the probability that $w \in W$ is $2^{-d}$, since $W$ is drawn from the distribution $\mc{W}^*$.
-  Since each element of $\Sigma^n$ is in $W$ independently, the probability that $Q_i$ contains exactly $k$ elements of $W$ follows the binomial distribution for $k$ successes in $|Q_i|$ independent Bernoulli trials with probability $2^{-d}$.
-  \begin{equation}
-    p_d = \binom{|Q_i|}{k} \left(2^{-d}\right)^k \left(1 - 2^{-d}\right)^{|Q_i| - k}
-  \end{equation}
-  \todo{At this point, I can't follow the proof in \autocite{krw12}, because I don't know how to bound these probabilities by an exponentially small number.}
+If the probability of a Bernoulli trial is less than one half, this provides an upper bound on the binary entropy of the probability.
+
+\begin{lemma}
+  Let $n$, $k$, $d$, $S$, and $s$ be as in the hypothesis of \autoref{lem:quad}.
+  Suppose $W \gets \mc{W}^*_n$ and let $A$ denote the Bernoulli random variable for the event $|S \cap W| = 1$, conditioned on the event $D = d$.
+  We have
+  \begin{equation*}
+    H_b(A) \leq -2 \frac{e^{\frac{1}{12s}}}{\sqrt{2 \pi}} \left(\frac{s}{k (s - k)}\right)^{\frac{1}{2}} \log \left(\frac{e^{\frac{1}{12s}}}{\sqrt{2 \pi}} \left(\frac{s}{k (s - k)}\right)^{\frac{1}{2}}\right).
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+  If $p$ is at most $q$ and $q \leq \frac{1}{2}$, then $H_b(p) \leq -2 q \log q$.
+  Apply this fact with the previous two lemmas, choosing $q$ to be $\frac{e^{\frac{1}{12s}}}{\sqrt{2 \pi}} \left(\frac{s}{k (s - k)}\right)^{\frac{1}{2}}$.
+\end{proof}
+
+\begin{lemma}
+  Let $n$, $d$, $S$, and $s$ be as in the hypothesis of the previous lemma.
+  For any $k \in [2^n]$, if
+  \begin{equation*}
+    p^{= k} = \Pr_{W \gets \mc{W}_n^*}[ |S \cap W| = k | D = d]
+  \end{equation*}
+  and
+  \begin{equation*}
+    p^{\geq k} = \Pr_{W \gets \mc{W}_n^*}[ |S \cap W| \geq k | D = d],
+  \end{equation*}
+  then
+  \begin{equation*}
+    p^{\geq k} = \sum_{i = k}^{s} p^{= i}.
+  \end{equation*}
+\end{lemma}
+\begin{proof}
+  The first equality holds because
+  \begin{align*}
+    p^{\geq k} & = \Pr_{W \gets \mc{W}_n^*}\left[ |S \cap W| \geq k \middle| D = d \right] \\
+    & = \Pr_{W \gets \mc{W}_n^*}\left[ \bigcup_{i = k}^{s} |S \cap W| = i \middle| D = d \right] \\
+    & = \sum_{i = k}^{s} \Pr_{W \gets \mc{W}_n^*}\left[ |S \cap W| = i \middle| D = d\right] \\
+    & = \sum_{i = k}^{s} p^{= i},
+  \end{align*}
+  where the third equality holds because the events $|S \cap W| = i$ and $|S \cap W| = j$ are mutually exclusive for any distinct $i$ and $j$ in $[2^n]$.
 \end{proof}
 
 \section{Todo}
