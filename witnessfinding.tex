@@ -95,29 +95,66 @@
 \section{Introduction}
 %%
 %% context
+Can a procedure that decides whether a Boolean formula has a satisfying assignment help to find such an assignment?
+The naïve adaptive ``search-to-decision'' reduction uses a linear number of (quite weak) queries.
 %% need
+Is there a lower bound on the number of queries required for a nonadaptive search-to-decision reduction?
 %% task
+We report on lower bounds for various classes of queries.
 %% object
-%%
+
 %% findings
+Most interesting types of queries require at least $\Omega(n^2)$ queries to find a witness.
 %% conclusion
+We were hoping to use lower bounds on these types of witness-finding algorithms to show that randomized reductions to $\CeP$ are less powerful than randomized reductions to $\PP$, but we were unable to do so.
 %% perspectives
 
-\begin{itemize}
-\item Adaptive $\mc{Q}_0$ upper bound is $O(n)$ (\autoref{thm:naive}).
-\item Adaptive $\mc{Q}_0$ lower bound is $\Omega(n)$ (lower bound for all queries).
-\item Nonadaptive $\mc{Q}_0$ upper bound is $O(n^2)$ (\autoref{thm:vv}).
-\item Nonadaptive $\mc{Q}_0$ lower bound is $\Omega(n^2)$ (\autoref{cor:q0lower}).
-\item Adaptive $\mc{Q}_1$ upper bound is $O(n^2)$ (from nonadaptive upper bound).
-\item Adaptive $\mc{Q}_1$ lower bound is $\Omega(n^2)$ (but only algorithms with high success probability \autoref{cor:isolationalg}).
-\item Nonadaptive $\mc{Q}_1$ upper bound is $O(n^2)$ (\autoref{cor:q1upper}).
-\item Nonadaptive $\mc{Q}_1$ lower bound is $\Omega(n^2)$ (\autoref{cor:q1lower}).
-
-\end{itemize}
-
-\todo{Can we improve the upper and lower bounds for adaptive $\mc{Q}_1$ witness-finding algorithms?}
+\autoref{fig:queries} contains a summary of the upper and lower bounds for nonadaptive witness-finding algorithms.
+In addition, adaptive $\mc{Q}_0$ algorithms use $\Theta(n)$ queries, and adaptive $\mc{Q}_1$ witness-finding algorithms with high success probability use $\Theta(n^2)$ queries.
+\todo{Currently the lower bound for the query complexity of adaptive $\mc{Q}_1$ witness-finding algorithms with success probability $\frac{1}{2}$ is $\Omega(n)$.
+  Can we either improve this to $\Omega(n^2)$ or provide a $O(n)$ upper bound?
+}
 
 \todo{Compare these randomized witness-finding algorithms with ``bounded query hierarchy'' algorithms, in which the query generator and the witness generator are not randomized (but possibly nondeterministic), and the goal is to decide a language, not necessarily output a witness.}
+
+\begin{figure}
+  \caption{\label{fig:queries}%
+    When considering nonadaptive witness-finding algorithms, $\mc{Q}_{\direct}$ algorithms require $\Omega(2^n)$ queries, $\mc{Q}_{\mono}$, $\mc{Q}_{\NP}$, and $\mc{Q}_k$ algorithms require $\Omega(n^2)$ queries, and $\mc{Q}_{\all}$ algorithms require $\Omega(n)$ queries.
+    In this diagram, lower bounds propagate downward and upper bounds propagate upward.%
+  }
+  \begin{center}
+    \begin{tikzpicture}[->, every node/.style={align=center}]
+      \node at (0, 0) (direct) {$\mc{Q}_{\direct}$ \\ $\Theta(2^n)$};
+      \node at (0, 2) (equal0) {$\mc{Q}_0$ \\ $\Theta(n^2)$};
+      \node at (2, 2) (equal1) {$\mc{Q}_1$ \\ $\Theta(n^2)$};
+      \node at (0, 5) (NP) {$\mc{Q}_{\NP}$ \\ $\Theta(n^2)$};
+      \node at (-2, 4) (geqk) {$\cup_k \mc{Q}_{\geq k}$ \\ $\Theta(n^2)$};
+      \node at (2, 4) (eqk) {$\cup_k \mc{Q}_k$ \\ $\Theta(n^2)$};
+      \node at (-2, 6) (PP) {$\mc{Q}_{\PP}$ \\ $\Omega(n), O(n^2)$};
+      \node at (2, 6) (CeP) {$\mc{Q}_{\CeP}$ \\ $\Omega(n), O(n^2)$};
+      \node at (-4, 6) (mono) {$\mc{Q}_{\mono}$ \\ $\Theta(n^2)$};
+      \node at (0, 7) (all) {$\mc{Q}_{\all}$ \\ $\Theta(n)$};
+      \draw (direct) to (equal0);
+      \draw (direct) to (equal1);
+      \draw (equal0) to (NP);
+      \draw (equal0) to (geqk);
+      \draw (equal0) to (eqk);
+      \draw (equal1) to (eqk);
+      \draw (eqk) to (CeP);
+      \draw (geqk) to (PP);
+      \draw (geqk) to (mono);
+      \draw (NP) to (CeP);
+      \draw (NP) to (PP);
+      \draw (PP) to (all);
+      \draw (mono) to (all);
+      \draw (CeP) to (all);
+
+      \node[color=gray] at (-6, 0) (weak) {weaker queries};
+      \node[color=gray] at (-6, 7) (strong) {stronger queries};
+      \draw[color=gray] (weak) to (strong);
+    \end{tikzpicture}
+  \end{center}
+\end{figure}
 
 \section{Definitions}
 
@@ -171,45 +208,6 @@ A hitting algorithm is always an adaptive algorithm; a nonadaptive hitting algor
 A witness-finding algorithm must output an element of $W$, whereas a hitting algorithm need not.
 
 \todo{define polynomial-time algorithms (provide polysize circuits that encode the query sets)}
-
-\begin{figure}
-  \caption{\label{fig:queries}%
-    When considering nonadaptive witness-finding algorithms, $\mc{Q}_{\direct}$ algorithms require $\Omega(2^n)$ queries, $\mc{Q}_{\mono}$, $\mc{Q}_{\NP}$, and $\mc{Q}_k$ algorithms require $\Omega(n^2)$ queries, and $\mc{Q}_{\all}$ algorithms require $\Omega(n)$ queries.
-    In this diagram, lower bounds propagate downward and upper bounds propagate upward.%
-  }
-  \begin{center}
-    \begin{tikzpicture}[->, every node/.style={align=center}]
-      \node at (0, 0) (direct) {$\mc{Q}_{\direct}$ \\ $\Theta(2^n)$};
-      \node at (0, 2) (equal0) {$\mc{Q}_0$ \\ $\Theta(n^2)$};
-      \node at (2, 2) (equal1) {$\mc{Q}_1$ \\ $\Theta(n^2)$};
-      \node at (0, 5) (NP) {$\mc{Q}_{\NP}$ \\ $\Theta(n^2)$};
-      \node at (-2, 4) (geqk) {$\cup_k \mc{Q}_{\geq k}$ \\ $\Theta(n^2)$};
-      \node at (2, 4) (eqk) {$\cup_k \mc{Q}_k$ \\ $\Theta(n^2)$};
-      \node at (-2, 6) (PP) {$\mc{Q}_{\PP}$ \\ $\Omega(n), O(n^2)$};
-      \node at (2, 6) (CeP) {$\mc{Q}_{\CeP}$ \\ $\Omega(n), O(n^2)$};
-      \node at (-4, 6) (mono) {$\mc{Q}_{\mono}$ \\ $\Theta(n^2)$};
-      \node at (0, 7) (all) {$\mc{Q}_{\all}?$ \\ $\Theta(n)$};
-      \draw (direct) to (equal0);
-      \draw (direct) to (equal1);
-      \draw (equal0) to (NP);
-      \draw (equal0) to (geqk);
-      \draw (equal0) to (eqk);
-      \draw (equal1) to (eqk);
-      \draw (eqk) to (CeP);
-      \draw (geqk) to (PP);
-      \draw (geqk) to (mono);
-      \draw (NP) to (CeP);
-      \draw (NP) to (PP);
-      \draw (PP) to (all);
-      \draw (mono) to (all);
-      \draw (CeP) to (all);
-
-      \node[color=gray] at (-6, 0) (weak) {weaker queries};
-      \node[color=gray] at (-6, 7) (strong) {stronger queries};
-      \draw[color=gray] (weak) to (strong);
-    \end{tikzpicture}
-  \end{center}
-\end{figure}
 
 \section{Relationship among algorithms}
 
