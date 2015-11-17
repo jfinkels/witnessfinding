@@ -264,7 +264,7 @@ The problem of finding a hitting algorithm reduces to the problem of finding a $
 On the other hand, there does not seem to be a general reduction from a $\mc{Q}_1$ witness-finding algorithm to a hitting algorithm.
 In order to output a single witness knowing only that a witness is contained in a particular query set doesn't help, unless the query set is small; there is no such guarantee on the size of that set.
 
-\begin{conjecture}
+\begin{conjecture}\label{conj:hitting}
   Under an appropriate setting of parameters, if the existence of a hitting algorithm implies the existence of an isolation query algorithm, then $\RP = \NP$.
   \todo{But both types of algorithms exist with the same parameters, as shown in the next section.}
 \end{conjecture}
@@ -275,68 +275,10 @@ However, the oracle answers would be inconsistent, because we don't know beforeh
 A similar problem arises when attempting the converse simulation: the simulated queries would be something of the form $Q_i \cup \{v_j\}$, where $v_j$ is the $j$th element of $\Sigma^n \setminus Q_i$, thus there would be a discrepancy between the answers of the two oracles.
 We therefore conjecture that there is evidence that such a simulation is unlikely.
 
-\begin{conjecture}
+\begin{conjecture}\label{conj:ktokplus1}
   For each $k \in \left[2^n\right]$, if the existence of a $\mc{Q}_k$ witness-finding algorithm implies the existence of a $\mc{Q}_{k + 1}$ witness-finding algorithm, then $\RP = \NP$.
   \todo{But both such algorithms exist unconditionally, as shown in the next section.}
 \end{conjecture}
-
-%% \subsection{Reductions to counting classes}
-
-%% In \autocite[Section~7]{green93}, Fred asks, ``Does the hypothesis $\P^{\CeP} = \P^\PP$ have any dramatic consequences?''
-%% Our intuition is that $\P^{\CeP}$ is less powerful than $\P^\PP$, because the latter can determine the exact number of accepting paths in a computation (or in other words, the number of witnesses in a witness set) by a binary search, whereas the former does not seem to admit this possibility.
-%% On the contrary, we know that $\NP^{\CeP} = \NP^\PP$.
-%% Perhaps a first step toward comparing $\P^\PP$ and $\P^{\CeP}$ is comparing $\RP^\PP$ and $\RP^{\CeP}$.
-
-%% There is a superficial similarity to the question ``is $\RP^\PP$ a subset of $\RP^{\CeP}$?'' and the question ``does a witness-finding algorithm with oracle $A^{\geq k}_W$ imply a witness-finding algorithm with oracle $A^{= k}_W$?''
-%% However, we run into a few problems when trying to follow this approach.
-%% First, according to \autocite[Remark~2]{krw12}, the lower bounds on emptiness query algorithms (with oracle $A^{=0}_W$) ``essentially hold'' when the oracle is $A^{\geq k}_W$ instead, for any $k$ bounded by a polynomial in $n$.
-%% Furthermore, if we attempt such a proof, we run into several problems.
-
-%% \begin{conjecture}
-%%   If $\RP^\PP \subseteq \RP^{\CeP}$, then a witness-finding algorithm with oracle $A^{\geq k}_W$ implies a witness-finding algorithm with oracle $A^{= k}_W$.
-%% \end{conjecture}
-%% \begin{proof}[Broken proof]
-%%   Let $W$ be any witness set.
-%%   Let $(\mc{Q}, \mc{F})$ be a witness-finding algorithm with oracle $A^{= k}_W$.
-%%   Let $L$ be a witnessed language with witness relation $L'$.
-%%   The problem of deciding whether $|Q \cap W| \geq k$ given any query set $Q$ can be decided by a $\PP$ oracle.
-%%   Construct machine $M$ with access to that oracle as follows on random string $s$ of length $r$.
-%%   \begin{itemize}
-%%   \item Run $\mc{Q}(s)$ to generate queries $Q_1, \dotsc, Q_m$, simulating access to the $\PP$ oracle (acting as the $A^{\geq k}_W$ oracle) when necessary.
-%%   \item Get query answers $A_1, \dotsc, A_m$ from the oracle.
-%%   \item Run $\mc{F}(s, A_1, \dotsc, A_m)$ to get potential witness $w$.
-%%   \item Decide if $(x, w) \in L'$.
-%%   \end{itemize}
-%%   \todo{Problem 1: need to show that this is a correct $\RP^\PP$ algorithm.}
-%%   By our hypothesis that $\RP^\PP \subseteq \RP^{\CeP}$, there is also a randomized oracle machine $M'$ that decides $L$ with access to a $\CeP$ oracle.
-%%   Now we wish to use $M'$ to construct a witness-finding algorithm $(\mc{Q}', \mc{F}')$ with access to oracle $A^{= k}_W$.
-
-%%   Define $\mc{Q}'$ as follows on random string $s$ of length $r$.
-%%   \begin{itemize}
-%%   \item Run $M'(x, s)$ and intercept each query $q_1, \dotsc, q_{m(n)}$ that it would make to the $\CeP$ oracle.
-%%     \todo{Problem 2: $M'$ needs access to a particular input string $x$; we may be able to modify the definition of the witness-finding algorithms to allow this.}
-%%     Each query $q_i$ is a question of the form ``is $|W_{q_i}| = k$?'', where $W_{q_i}$ is a witness set that corresponds to the input string $q_i$, so we simulate those queries by sending the query set $W_{q_i}$ to the oracle $A^{= k}_W$.
-%%     \todo{Problem 3: this won't work, since $A^{= k}_W$ only answers questions of the form ``is $|W_{q_i} \cap W| = k$?'', but we need it to answer questions like ``is $|W_{q_i}| = k$?'', and we don't get to choose the arbitrary witness set $W$.}
-%%   \item Output the queries $W_{q_1}, \dotsc, W_{q_{m(n)}}$.
-%%   \end{itemize}
-%%   Define $\mc{F}'$ as follows on random string $s$ and oracle answers $A_1, \dotsc, A_{m(n)}$.
-%%   \begin{itemize}
-%%   \item Run $M'(x, s)$ and when $M'$ makes query $q_i$, provide answer $A_i$ to it.
-%%   \item \todo{Problem 4: at this point, all $M'$ tells us is that there is a witness (or none); it gives no indication as to what the witness is.
-%%     If one of the queries causes the oracle to answer yes and the size of the query set is not too large, we could simply output a random element of the query set for a small penalty in success probability, but in general we have no such guarantees.}
-%%   \end{itemize}
-%% \end{proof}
-
-%% Although this starts to have little to do with the witness-finding algorithm results given in the following sections, another approach to showing that $\P^{\CeP} \neq \P^\PP$ may be to show that adaptive queries to $\CeP$ are no more powerful than nonadaptive queries, whereas adaptive queries to $\PP$ are more powerful than adaptive queries.
-%% What is known about $\PP$?
-%% \begin{itemize}
-%% \item $\PP$ is closed under complement, union, and intersection.
-%% \item $\PP = \P^{\PP[O(1)]}_\parallel$ (that is, $\PP$ is closed under polynomial time $k$-round truth-table reductions, for any $k \in O(1)$).
-%% \end{itemize}
-%% What is known about $\CeP$?
-%% \begin{itemize}
-%% \item $\P^{\CeP[O(1)]}_\parallel = \P^{\CeP[O(\log n)]}$ (see \autocite[Theorem~5]{green93} and \autocite[Corollary~4.6]{ogiwara94}).
-%% \end{itemize}
 
 \section{Upper bounds}
 
@@ -418,7 +360,7 @@ The collection of all $\NP$ queries is denoted $\mc{Q}_{\NP}$.
 
 The next corollary is a generalization of \autocite[Remark~2]{krw12}.
 
-\begin{corollary}
+\begin{corollary}\label{cor:geqk}
   Suppose $k \in \left[2^n\right]$.
   Each $\mc{Q}_{\geq k}$ witness-finding algorithm has query complexity $\Omega(n^2)$.
 \end{corollary}
@@ -426,7 +368,7 @@ The next corollary is a generalization of \autocite[Remark~2]{krw12}.
   This is a special case of \autoref{thm:monotonelower}.
 \end{proof}
 
-\begin{corollary}
+\begin{corollary}\label{cor:equalsk}
   Suppose $k \in \left[2^n\right]$.
   Each $\mc{Q}_k$ witness-finding algorithm has query complexity $\Omega(n^2)$.
 \end{corollary}
@@ -473,6 +415,64 @@ The proof of this theorem relies on the probabilistic method to show the existen
 \end{theorem}
 
 \todo{I can't understand what the random variable is for which there is an expectation here.}
+
+\section{Comparing equality to counting queries}
+
+Now we consider more general types of queries, queries to $\PP$ or $\CeP$ oracles.
+In \autocite[Section~7]{green93}, Fred asks, ``Does the hypothesis $\P^{\CeP} = \P^\PP$ have any dramatic consequences?''
+Our intuition is that $\P^{\CeP}$ is less powerful than $\P^\PP$, because the latter can determine the exact number of accepting paths in a computation (or in other words, the number of witnesses in a witness set) by a binary search, whereas the former does not seem to admit this possibility.
+On the contrary, we know that $\NP^{\CeP} = \NP^\PP$.
+Perhaps a first step toward comparing $\P^\PP$ and $\P^{\CeP}$ is comparing $\RP^\PP$ and $\RP^{\CeP}$.
+
+There is a superficial similarity to the question ``is $\RP^\PP$ a subset of $\RP^{\CeP}$?'' and the question ``does a witness-finding algorithm with oracle $Q_{\geq k}$ imply a witness-finding algorithm with oracle $Q_k$?''
+However, we run into a few problems when trying to follow this approach.
+First, similar to the issues with \autoref{conj:ktokplus1}, the lower bounds for $\mc{Q}_k$ and $\mc{Q}_{\geq k}$ are identical, as seen in \autoref{cor:geqk} and \autoref{cor:equalsk}.
+Furthermore, if we attempt such a proof, we run into several problems.
+
+\begin{conjecture}
+  If $\RP^\PP \subseteq \RP^{\CeP}$, then a $\mc{Q}_{\geq k}$ witness-finding algorithm implies a $\mc{Q}_k$ witness-finding algorithm.
+\end{conjecture}
+\begin{proof}[Broken proof]
+  Let $W$ be any witness set.
+  Let $((Q_1, \dotsc, Q_m), f)$ be a $\mc{Q}_{\geq k}$ witness-finding algorithm.
+  Let $L$ be a witnessed language with witness relation $L'$.
+  The problem of deciding whether $|Q \cap W| \geq k$ given any query set $Q$ can be decided by a $\PP$ oracle.
+  Construct machine $M$ with access to that oracle as follows on random string $s$ of length $r$.
+  \begin{itemize}
+  \item Make queries $(Q_1, \dotsc, Q_m)$ to the $\PP$ oracle (which is behaving like the $\mc{Q}_k$ oracle) to get answer bits $A_1, \dotsc, A_m$.
+  \item Run $f(A_1, \dotsc, A_m)$ to get potential witness $w$.
+  \item Decide if $(x, w) \in L'$.
+  \end{itemize}
+  \todo{Problem 1: need to show that this is a correct $\RP^\PP$ algorithm.}
+  By our hypothesis that $\RP^\PP \subseteq \RP^{\CeP}$, there is also a randomized oracle machine $M'$ that decides $L$ with access to a $\CeP$ oracle.
+  Now we wish to use $M'$ to construct a $\mc{Q}_k$ witness-finding algorithm $((Q'_1, \dotsc, Q'_{m'}), f')$.
+  Define the joint distribution $(Q'_1, \dotsc, Q'_{m'})$ as follows.
+  \begin{itemize}
+  \item Run $M'(x, s)$ and intercept each query $q_1, \dotsc, q_{m'}$ that it would make to the $\CeP$ oracle, where $x$ is an input whose witness set is $W$ and $s$ is a random seed for the randomized Turing machine $M'$.
+    \todo{Problem 2: $M'$ needs access to a particular input string $x$; we may be able to modify the definition of the witness-finding algorithms to allow this.}
+    Each query $q_i$ is a question of the form ``is $|W_{q_i}| = k$?'', where $W_{q_i}$ is a witness set that corresponds to the input string $q_i$.
+    \todo{Problem 3: this won't work, since $\mc{Q}_k$ only answers questions of the form ``is $|W_{q_i} \cap W| = k$?'', but we need it to answer questions like ``is $|W_{q_i}| = k$?'', and we don't get to choose the arbitrary witness set $W$.}
+  \item Let $Q'_i = q_i$ for each $i \in [m']$.
+  \end{itemize}
+  Define the function $f'$ as follows on oracle answer bits $A_1, \dotsc, A_{m'}$.
+  \begin{itemize}
+  \item Run $M'(x, s)$ and when $M'$ makes query $q_i$, provide answer $A_i$ to it.
+  \item \todo{Problem 4: at this point, all $M'$ tells us is that there is a witness (or none); it gives no indication as to what the witness is.
+    If one of the queries causes the oracle to answer yes and the size of the query set is not too large, we could simply output a random element of the query set for a small penalty in success probability, but in general we have no such guarantees.}\qedhere
+  \end{itemize}
+\end{proof}
+
+Although this starts to have little to do with the witness-finding algorithm results given in the following sections, another approach to showing that $\P^{\CeP} \neq \P^\PP$ may be to show that adaptive queries to $\CeP$ are no more powerful than nonadaptive queries, whereas adaptive queries to $\PP$ are more powerful than adaptive queries.
+What is known about $\PP$?
+\begin{itemize}
+\item $\PP$ is closed under complement, union, and intersection.
+\item $\PP = \P^{\PP[O(1)]}_\parallel$ (that is, $\PP$ is closed under polynomial time $k$-round truth-table reductions, for any $k \in O(1)$).
+\item $\P^{\PP} = \P^{\GapP}$ \autocite[Theorem~4.14]{fortnow97}.
+\end{itemize}
+What is known about $\CeP$?
+\begin{itemize}
+\item $\P^{\CeP[O(1)]}_\parallel = \P^{\CeP[O(\log n)]}$ (see \autocite[Theorem~5]{green93} and \autocite[Corollary~4.6]{ogiwara94}).
+\end{itemize}
 
 \section{Entropy on bad witness distributions}
 
