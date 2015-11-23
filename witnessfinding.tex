@@ -474,6 +474,47 @@ What is known about $\CeP$?
 \item $\P^{\CeP[O(1)]}_\parallel = \P^{\CeP[O(\log n)]}$ (see \autocite[Theorem~5]{green93} and \autocite[Corollary~4.6]{ogiwara94}).
 \end{itemize}
 
+\section{Lower bounds via Kolmogorov complexity?}
+
+\autocite{krw14} uses an evil distribution on witness sets to determine the (Shannon) entropy in the queries produced by an arbitrary witness-finding algorithm.
+Here we attempt to do the same using Kolmogorov complexity instead of entropy.
+
+According to Watanabe in the introduction to ``Kolmogorov Complexity and Computational Complexity'', \autocite{???}, there is no standard definition of the Kolmogorov complexity of a set.
+He offers three options,
+\begin{itemize}
+\item the minimum complexity of any string in the set,
+\item the complexity of the characteristic sequence of the set,
+\item the size of a Turing machine or circuit that outputs the set.
+\end{itemize}
+Let's stick with the second one for now.
+
+The \emph{Kolmogorov complexity} of a string is defined as
+\begin{equation*}
+  K(s) = \min_{p} \left\{ |p| \,\middle|\, U(p, \lambda) \text{ outputs } s\},
+\end{equation*}
+where $p$ is a Turing machine program, $U$ is the universal Turing machine, and $\lambda$ is the empty string.
+The Kolmogorov complexity of a finite set of strings $S$ is defined by $K(S) = K(\chi_S)$, where $\chi_S$ is the characteristic sequence of $S$.
+
+A string $s$ is \emph{incompressible} if $K(s) \geq |s|$.
+A finite set of strings $S \subseteq \Sigma^n$ is incompressible if $K(S) \geq |\chi_S|$, or more simply $K(S) \geq 2^n$, since $|\chi_S| = 2^n$ for any set of strings of length $n$.
+
+\begin{theorem}
+  Each $\mc{Q}_{\direct}$ witness-finding algorithm has query complexity ???.
+\end{theorem}
+\begin{proof}
+  Let $W$ be an incompressible witness set for strings of length $n$.
+  Such a set exists because there are incompressible strings of each length \autocite{???} and specifically there is an incompressible string of length $2^n$.
+  We interpret that string as the characteristic sequence of a set of strings of length $n$.
+
+  Let $((Q_1, \dotsc, Q_m), f)$ be an arbitrary witness-finding algorithm.
+  Assume with the intention of producing a contradiction that $m$ is at most ???.
+  We will show that $W$ can be compressed using the witness-finding algorithm.
+  In other words, we will show that there is a program of length less than $2^n$ that outputs the (entire) characteristic sequence of $W$.
+  The program proceeds as follows.
+  Run $f$ on input $A_1, \dotsc, A_m$, where $A_i$ is the answer
+
+\end{proof}
+
 \section{Entropy on bad witness distributions}
 
 In this section $H(X)$ denotes the Shannon entropy of random variable $X$ chosen from a distribution on binary strings, and $H_b(p)$ denotes the binary entropy function on a Bernoulli process with success probability $p$.
